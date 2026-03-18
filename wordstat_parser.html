@@ -587,7 +587,7 @@ async function wsAPI(endpoint, payload={}) {
   try{
     r=await fetch(proxy,{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'text/plain;charset=UTF-8'},
       body:JSON.stringify({token,endpoint,payload})
     });
   }catch(e){
