@@ -317,7 +317,7 @@ async function wsAPI(endpoint, payload={}) {
 
   const r=await fetch(proxy,{
     method:'POST',
-    headers:{'Content-Type':'application/json'},
+    headers:{'Content-Type':'text/plain'},
     body:JSON.stringify({token,endpoint,payload})
   });
   if(!r.ok)throw new Error('Proxy HTTP '+r.status);
