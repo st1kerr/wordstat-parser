@@ -154,7 +154,7 @@ table.rt{width:100%;border-collapse:collapse;font-size:11px}
   <div class="header">
     <div class="header-left"><div class="logo">W</div><h1>Wordstat Parser</h1></div>
     <div class="header-right">
-      <span class="badge">v2.4 · API v1 · /regions · GAS Proxy</span>
+      <span class="badge">v2.5 · API v1 · /regions · GAS Proxy</span>
       <div class="theme-toggle" id="tt" onclick="togTheme()">🌙</div>
     </div>
   </div>
@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(localStorage.getItem('ws_theme')==='light')document.documentElement.classList.add('light');
   updTI();
   // Clear stale cache from old versions
-  const CACHE_VER='v2.4';
+  const CACHE_VER='v2.5';
   if(localStorage.getItem('ws_tree_ver')!==CACHE_VER){localStorage.removeItem('ws_tree');localStorage.setItem('ws_tree_ver',CACHE_VER)}
   // Try cached tree
   const cached=localStorage.getItem('ws_tree');
@@ -501,8 +501,8 @@ async function loadTree(){
     function findRu(nodes){
       if(!nodes||!Array.isArray(nodes)||ru)return;
       for(const n of nodes){
-        const id=n.id??n.regionId??n.code??n.geoId??n.region_id;
-        const nm=String(n.name??n.title??n.caption??n.text??'');
+        const id=n.value??n.id??n.regionId??n.code??n.geoId??n.region_id;
+        const nm=String(n.label??n.name??n.title??n.caption??n.text??'');
         if(String(id)==='225'||nm.toLowerCase().includes('россия')){ru=n;return}
         const ch=n.children??n.items??n.regions??n.sub??n.subregions;
         if(Array.isArray(ch))findRu(ch);
@@ -511,7 +511,7 @@ async function loadTree(){
     findRu(root);
     if(!ru){
       if(root.length===1)ru=root[0];
-      else ru={id:225,name:'Россия',children:root};
+      else ru={value:225,label:'Россия',children:root};
     }
     regionTree=simplify(ru);
     flatNames(regionTree);
@@ -527,9 +527,8 @@ async function loadTree(){
 }
 
 function simplify(n){
-  const id=n.id??n.regionId??n.code??n.geoId??n.region_id??null;
-  const name=String(n.name??n.title??n.caption??n.text??n.regionName??n.region_name??'');
-  // Try multiple children fields
+  const id=n.value??n.id??n.regionId??n.code??n.geoId??n.region_id??null;
+  const name=String(n.label??n.name??n.title??n.caption??n.text??n.regionName??n.region_name??'');
   let ch=n.children??n.items??n.regions??n.sub??n.subregions??n.childs;
   if(!Array.isArray(ch))ch=[];
   const children=ch.map(simplify);
@@ -541,13 +540,12 @@ function flatNames(n){
 }
 // Deep flatten - extract ALL ids/names from any nested structure
 function deepExtractNames(obj,depth=0){
-  if(!obj||depth>10)return;
+  if(!obj||depth>15)return;
   if(Array.isArray(obj)){obj.forEach(item=>deepExtractNames(item,depth+1));return}
   if(typeof obj!=='object')return;
-  const id=obj.id??obj.regionId??obj.code??obj.geoId??obj.region_id;
-  const name=obj.name??obj.title??obj.caption??obj.text??obj.regionName??obj.region_name;
+  const id=obj.value??obj.id??obj.regionId??obj.code??obj.geoId??obj.region_id;
+  const name=obj.label??obj.name??obj.title??obj.caption??obj.text??obj.regionName??obj.region_name;
   if(id!=null&&name&&String(name).trim())regionNames[Number(id)]=String(name);
-  // Recurse into all array/object values
   for(const key of Object.keys(obj)){
     const val=obj[key];
     if(Array.isArray(val))val.forEach(item=>deepExtractNames(item,depth+1));
@@ -794,9 +792,9 @@ async function showFull(){
       if(j.result)root=j.result;else if(j.regions)root=j.regions;else if(j.items)root=j.items;else if(j.data)root=j.data;
       if(!Array.isArray(root))root=(root.children||root.items||root.regions)?[root]:[root];
       let ru=null;
-      function findRu(nodes){if(!nodes||!Array.isArray(nodes)||ru)return;for(const n of nodes){const id=n.id??n.regionId??n.code??n.geoId??n.region_id;const nm=String(n.name??n.title??n.caption??n.text??'');if(String(id)==='225'||nm.toLowerCase().includes('россия')){ru=n;return}const ch=n.children??n.items??n.regions??n.sub;if(Array.isArray(ch))findRu(ch)}}
+      function findRu(nodes){if(!nodes||!Array.isArray(nodes)||ru)return;for(const n of nodes){const id=n.value??n.id??n.regionId??n.code??n.geoId??n.region_id;const nm=String(n.label??n.name??n.title??n.caption??n.text??'');if(String(id)==='225'||nm.toLowerCase().includes('россия')){ru=n;return}const ch=n.children??n.items??n.regions??n.sub;if(Array.isArray(ch))findRu(ch)}}
       findRu(root);
-      if(!ru)ru=root.length===1?root[0]:{id:225,name:'Россия',children:root};
+      if(!ru)ru=root.length===1?root[0]:{value:225,label:'Россия',children:root};
       regionTree=simplify(ru);flatNames(regionTree);
       localStorage.setItem('ws_tree',JSON.stringify(regionTree));
       const afterUnknowns=rids.filter(id=>!regionNames[id]).length;
