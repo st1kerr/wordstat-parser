@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wordstat Parser — Avitofamily</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#0a0a0f;--surface:#12121a;--surface-2:#1a1a26;--surface-3:#222233;--border:#2a2a3d;--border-hover:#3d3d5c;--text:#e8e8f0;--text-muted:#8888a0;--text-dim:#5c5c75;--accent:#6c5ce7;--accent-glow:rgba(108,92,231,0.3);--green:#00d68f;--green-dim:rgba(0,214,143,0.15);--red:#ff6b6b;--red-dim:rgba(255,107,107,0.15);--yellow:#ffd93d;--yellow-dim:rgba(255,217,61,0.15);--radius:10px;--radius-sm:6px;--shadow:0 2px 8px rgba(0,0,0,0.3)}
+html.light{--bg:#f4f5f7;--surface:#fff;--surface-2:#f0f1f4;--surface-3:#e6e8ed;--border:#d8dae0;--border-hover:#b8bcc5;--text:#1a1a2e;--text-muted:#6b6e7a;--text-dim:#9a9daa;--green:#00a86b;--green-dim:rgba(0,168,107,0.1);--red:#e74c3c;--red-dim:rgba(231,76,60,0.1);--yellow:#e6a800;--yellow-dim:rgba(230,168,0,0.1);--shadow:0 2px 8px rgba(0,0,0,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;transition:background .3s,color .3s}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:var(--surface)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.app{max-width:1440px;margin:0 auto;padding:20px}
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 0 24px;border-bottom:1px solid var(--border);margin-bottom:20px;flex-wrap:wrap;gap:8px}
+.header-left{display:flex;align-items:center;gap:14px}
+.logo{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),#a78bfa);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:#fff}
+.header h1{font-size:20px;font-weight:700;letter-spacing:-.5px}
+.header-right{display:flex;align-items:center;gap:10px}
+.badge{font-size:11px;font-weight:600;background:var(--surface-2);border:1px solid var(--border);padding:4px 10px;border-radius:20px;color:var(--text-muted)}
+.theme-toggle{width:36px;height:36px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text-muted);transition:all .2s}
+.theme-toggle:hover{border-color:var(--accent);color:var(--text)}
+.banner{border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;font-size:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.banner a{color:inherit;text-decoration:underline}
+.banner code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(0,0,0,.2);padding:1px 4px;border-radius:3px}
+.bi{background:var(--yellow-dim);border:1px solid rgba(255,217,61,.2);color:var(--yellow)}
+.be{background:var(--red-dim);border:1px solid rgba(255,107,107,.2);color:var(--red);display:none}
+.be.v{display:flex}
+.bs2{background:var(--green-dim);border:1px solid rgba(0,214,143,.2);color:var(--green);display:none}
+.bs2.v{display:flex}
+/* Config bars */
+.cfg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);flex-wrap:wrap}
+.cfg label{font-size:12px;font-weight:600;color:var(--text-muted);white-space:nowrap}
+.cfg input{flex:1;min-width:180px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none}
+.cfg input:focus{border-color:var(--accent)}
+.cfg input::placeholder{color:var(--text-dim)}
+.cfg .btn-sm{font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;padding:6px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);cursor:pointer;white-space:nowrap}
+.cfg .btn-sm:hover{border-color:var(--accent);color:var(--accent)}
+/* Grid */
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
+@media(max-width:960px){.main-grid{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.ph{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ph h2{font-size:13px;font-weight:700}
+.cnt{font-size:11px;font-weight:600;background:var(--surface-3);padding:2px 8px;border-radius:10px;color:var(--text-muted)}
+.pb{padding:12px 16px}
+textarea.kw{width:100%;min-height:340px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;resize:vertical;outline:none}
+textarea.kw:focus{border-color:var(--accent)}
+textarea.kw::placeholder{color:var(--text-dim)}
+.hint{margin-top:5px;font-size:10px;color:var(--text-dim)}
+/* Regions */
+.rsearch{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px 8px 30px;color:var(--text);font-size:12px;outline:none;margin-bottom:8px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c5c75' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:10px center}
+.rsearch:focus{border-color:var(--accent)}
+.qbtns{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.qb{font-family:'Manrope',sans-serif;font-size:10px;font-weight:600;padding:3px 7px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);cursor:pointer;transition:all .12s}
+.qb:hover{border-color:var(--accent);color:var(--accent)}
+.rscroll{max-height:240px;overflow-y:auto}
+.dist{margin-bottom:2px}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;cursor:pointer;border-radius:var(--radius-sm);background:var(--surface-2);margin-bottom:1px;font-size:12px;font-weight:700}
+.dh:hover{background:var(--surface-3)}
+.dh .a{font-size:9px;color:var(--text-dim);transition:transform .2s;display:inline-block;margin-right:5px}
+.dh .a.o{transform:rotate(90deg)}
+.dc{font-size:10px;color:var(--text-dim);margin-left:4px}
+.ds{font-family:'Manrope',sans-serif;font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer}
+.ds:hover{border-color:var(--accent);color:var(--accent)}
+.db{display:none;padding:4px 0 4px 8px}
+.db.o{display:flex;flex-wrap:wrap;gap:3px}
+.cc{font-size:10px;font-weight:500;padding:2px 8px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:all .1s;user-select:none;white-space:nowrap}
+.cc:hover{border-color:var(--border-hover);color:var(--text)}
+.cc.s{background:var(--accent-glow);border-color:var(--accent);color:var(--text)}
+.sbar{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:none}
+.sbar.v{display:block}
+.sbar-t{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:flex;justify-content:space-between}
+.sbar-t button{font-family:'Manrope',sans-serif;font-size:10px;font-weight:600;color:var(--red);cursor:pointer;background:none;border:none}
+.sl{display:flex;flex-wrap:wrap;gap:2px;max-height:50px;overflow-y:auto}
+.st{font-size:9px;font-weight:600;padding:2px 5px;border-radius:3px;background:var(--green-dim);color:var(--green);display:flex;align-items:center;gap:2px}
+.st .x{cursor:pointer;opacity:.6;font-size:11px}.st .x:hover{opacity:1}
+/* Quota */
+.qbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;margin-bottom:14px;font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow)}
+.qv{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text)}
+.qv.w{color:var(--yellow)}.qv.d{color:var(--red)}
+/* Progress */
+.progress-wrap{display:none;margin-bottom:14px}
+.progress-wrap.v{display:block}
+.progress-bar{width:100%;height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
+.progress-text{font-size:11px;color:var(--text-muted);margin-top:4px;display:flex;justify-content:space-between}
+/* Action */
+.action-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.btn{font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;padding:10px 24px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 0 16px var(--accent-glow)}
+.btn-primary:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none}
+.btn-secondary{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--border-hover);color:var(--text)}
+/* Results */
+.rp{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:none;box-shadow:var(--shadow)}
+.rp.v{display:block}
+.rh{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.rh h2{font-size:13px;font-weight:700}
+.ra{display:flex;gap:5px}
+.rbs{font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;padding:5px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);cursor:pointer}
+.rbs:hover{border-color:var(--border-hover);color:var(--text)}
+.tw{overflow-x:auto;max-height:500px;overflow-y:auto}
+table.rt{width:100%;border-collapse:collapse;font-size:11px}
+.rt thead{position:sticky;top:0;z-index:2}
+.rt th{background:var(--surface-3);padding:7px 10px;text-align:left;font-weight:600;font-size:10px;color:var(--text-muted);border-bottom:1px solid var(--border);white-space:nowrap}
+.rt th:first-child{position:sticky;left:0;z-index:3;background:var(--surface-3)}
+.rt td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}
+.rt td:first-child{position:sticky;left:0;background:var(--surface);font-weight:500;z-index:1}
+.rt tbody tr:hover td{background:var(--surface-2)}
+.rt tbody tr:hover td:first-child{background:var(--surface-2)}
+.rt td.n{font-family:'JetBrains Mono',monospace;text-align:right}
+.rt td.h{color:var(--green);font-weight:600}.rt td.m{color:var(--yellow)}.rt td.l{color:var(--text-dim)}
+/* Log */
+.lp{margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:none}
+.lp.v{display:block}
+.lph{padding:8px 16px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;display:flex;justify-content:space-between}
+.lpb{padding:8px 16px;max-height:150px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:10px;line-height:1.7;color:var(--text-dim)}
+.le.e{color:var(--red)}.le.s{color:var(--green)}.le.i{color:var(--text-muted)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left"><div class="logo">W</div><h1>Wordstat Parser</h1></div>
+    <div class="header-right">
+      <span class="badge">API v1 · /regions · GAS Proxy</span>
+      <div class="theme-toggle" id="tt" onclick="togTheme()">🌙</div>
+    </div>
+  </div>
+
+  <div class="banner bi">⚡ Используется <b>/regions</b> — 1 запрос на ключ = все регионы сразу (2 ед. квоты). Запросы идут через Google Apps Script прокси — никаких CORS проблем.</div>
+  <div class="banner be" id="errB"><span>⛔</span><span id="errT"></span></div>
+  <div class="banner bs2" id="quotaB"><span>📊</span><span id="quotaT"></span></div>
+
+  <div class="cfg">
+    <label>🔗 Proxy URL</label>
+    <input type="text" id="proxy" placeholder="https://script.google.com/macros/s/ВАША_ССЫЛКА/exec" autocomplete="off">
+    <button class="btn-sm" onclick="testProxy()">Тест</button>
+  </div>
+
+  <div class="cfg">
+    <label>🔑 Bearer Token</label>
+    <input type="password" id="token" placeholder="OAuth-токен Wordstat API..." autocomplete="off">
+    <button class="btn-sm" onclick="checkQuota()">Квота</button>
+  </div>
+
+  <div class="qbar">
+    <span>Расход:</span>
+    <span>Ключей: <span class="qv" id="qKw">0</span></span>
+    <span>× 2 ед. =</span>
+    <span>Итого: <span class="qv" id="qTot">0</span> ед.</span>
+  </div>
+
+  <div class="main-grid">
+    <div class="panel">
+      <div class="ph"><h2>Ключевые запросы</h2><span class="cnt" id="kwC">0</span></div>
+      <div class="pb">
+        <textarea class="kw" id="kw" placeholder="Каждый ключ с новой строки:&#10;&#10;ремонт ванной под ключ&#10;ремонт ванной комнаты&#10;ремонт санузла&#10;демонтаж&#10;наливной пол"></textarea>
+        <div class="hint">1 ключ = 1 вызов /regions = 2 ед. квоты. Все регионы в ответе.</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph"><h2>Регионы</h2><span class="cnt" id="regC">0</span></div>
+      <div class="pb">
+        <input type="text" class="rsearch" id="rsearch" placeholder="Поиск города..." oninput="filterR()">
+        <div class="qbtns">
+          <button class="qb" onclick="preset('top5')">🏆 Топ-5</button>
+          <button class="qb" onclick="preset('top10')">🏙 Топ-10</button>
+          <button class="qb" onclick="preset('top20')">📊 Топ-20</button>
+          <button class="qb" onclick="preset('500k')">🔵 >500к</button>
+          <button class="qb" onclick="preset('250k')">🟢 >250к</button>
+          <button class="qb" onclick="preset('100k')">🟡 >100к</button>
+          <button class="qb" onclick="preset('mo')">📍 МО</button>
+          <button class="qb" onclick="preset('lo')">📍 ЛО</button>
+          <button class="qb" onclick="preset('russia')">🇷🇺 Вся РФ</button>
+          <button class="qb" onclick="clearR()">✕</button>
+        </div>
+        <div class="rscroll" id="rscroll"></div>
+        <div class="sbar" id="sbar">
+          <div class="sbar-t"><span>Выбрано: <span id="sn">0</span></span><button onclick="clearR()">очистить</button></div>
+          <div class="sl" id="sl"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-wrap" id="pw">
+    <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
+    <div class="progress-text"><span id="pt"></span><span id="pp"></span></div>
+  </div>
+
+  <div class="action-bar">
+    <button class="btn btn-primary" id="startBtn" onclick="run()">Запустить парсинг</button>
+    <button class="btn btn-secondary" onclick="clearAll()">Очистить</button>
+  </div>
+
+  <div class="rp" id="rp">
+    <div class="rh"><h2>📊 Результаты</h2><div class="ra">
+      <button class="rbs" onclick="copyT()">📋 Копировать</button>
+      <button class="rbs" onclick="dlCSV()">💾 CSV</button>
+      <button class="rbs" onclick="dlTSV()">📄 TSV</button>
+    </div></div>
+    <div class="tw"><table class="rt"><thead id="tH"></thead><tbody id="tB"></tbody></table></div>
+  </div>
+
+  <div class="lp" id="lp">
+    <div class="lph" onclick="document.getElementById('lb').style.display=document.getElementById('lb').style.display==='none'?'block':'none'"><span>Лог</span><span>▼</span></div>
+    <div class="lpb" id="lb"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CITIES: [id, name, population_thousands, district_index]
+// ============================================================
+const C=[
+[213,"Москва",13104,0],[10728,"Балашиха",540,0],[10740,"Подольск",366,0],[10753,"Химки",265,0],[10725,"Мытищи",264,0],[10734,"Королёв",227,0],[10738,"Люберцы",218,0],[10735,"Красногорск",191,0],[10743,"Одинцово",182,0],[10719,"Домодедово",173,0],[10723,"Электросталь",157,0],[10748,"Раменское",132,0],[10729,"Коломна",140,0],[21622,"Щёлково",139,0],[10741,"Серпухов",125,0],[10745,"Пушкино",118,0],[20545,"Долгопрудный",115,0],[10733,"Орехово-Зуево",115,0],[10742,"Жуковский",111,0],[10747,"Реутов",108,0],[10726,"Ногинск",104,0],[10716,"Видное",103,0],[10750,"Сергиев Посад",98,0],[10737,"Лобня",94,0],[10718,"Воскресенск",94,0],[10730,"Клин",79,0],[10727,"Наро-Фоминск",77,0],[21623,"Чехов",76,0],[10720,"Дубна",75,0],[10721,"Егорьевск",72,0],[20543,"Дзержинский",68,0],[21626,"Дмитров",67,0],[10746,"Ступино",65,0],[10744,"Павловский Посад",64,0],[10751,"Солнечногорск",62,0],[10724,"Ивантеевка",62,0],[10739,"Фрязино",60,0],[10736,"Лыткарино",60,0],[10732,"Кашира",48,0],[20544,"Котельники",45,0],[10749,"Протвино",35,0],[10731,"Истра",53,0],[10717,"Волоколамск",19,0],
+[193,"Воронеж",1058,0],[15,"Тула",467,0],[16,"Ярославль",608,0],[11,"Рязань",539,0],[14,"Тверь",425,0],[9,"Липецк",503,0],[6,"Калуга",349,0],[192,"Владимир",354,0],[8,"Курск",450,0],[12,"Смоленск",325,0],[191,"Брянск",399,0],[18,"Орёл",303,0],[13,"Тамбов",292,0],[5,"Иваново",397,0],[4,"Белгород",394,0],[7,"Кострома",277,0],
+[2,"Санкт-Петербург",5600,1],[22,"Калининград",512,1],[20,"Архангельск",349,1],[23,"Мурманск",270,1],[21,"Вологда",313,1],[25,"Псков",209,1],[24,"Великий Новгород",226,1],[19,"Сыктывкар",245,1],[20256,"Череповец",315,1],[20246,"Северодвинск",183,1],[10869,"Всеволожск",82,1],[10860,"Гатчина",93,1],[10859,"Выборг",73,1],[21540,"Мурино",79,1],[10868,"Сертолово",65,1],[10861,"Сосновый Бор",68,1],[21541,"Кудрово",62,1],[10862,"Тихвин",56,1],[10863,"Кириши",49,1],[10864,"Кингисепп",47,1],[10866,"Тосно",40,1],[10867,"Луга",36,1],[20247,"Котлас",60,1],
+[35,"Краснодар",1200,2],[39,"Ростов-на-Дону",1143,2],[38,"Волгоград",1000,2],[37,"Астрахань",529,2],[959,"Сочи",466,2],[960,"Новороссийск",340,2],[146,"Симферополь",340,2],[20369,"Волжский",326,2],[20350,"Таганрог",248,2],[20351,"Шахты",231,2],[961,"Армавир",191,2],[20352,"Волгодонск",170,2],[20353,"Новочеркасск",169,2],[1093,"Майкоп",143,2],[20354,"Батайск",132,2],[971,"Геленджик",118,2],[1094,"Элиста",103,2],[970,"Анапа",101,2],[20357,"Азов",81,2],[20330,"Ейск",82,2],[20337,"Туапсе",61,2],
+[43,"Казань",1318,3],[47,"Нижний Новгород",1198,3],[51,"Самара",1163,3],[172,"Уфа",1145,3],[50,"Пермь",1055,3],[194,"Саратов",838,3],[20480,"Тольятти",693,3],[44,"Ижевск",654,3],[195,"Ульяновск",635,3],[48,"Оренбург",575,3],[20410,"Набережные Челны",542,3],[46,"Киров",536,3],[49,"Пенза",516,3],[45,"Чебоксары",497,3],[42,"Саранск",318,3],[20430,"Стерлитамак",280,3],[41,"Йошкар-Ола",278,3],[20411,"Нижнекамск",241,3],[20510,"Энгельс",231,3],[20450,"Дзержинск",229,3],[20530,"Орск",227,3],[20511,"Балаково",181,3],[20481,"Сызрань",168,3],[20412,"Альметьевск",159,3],[20431,"Салават",147,3],[20490,"Березники",141,3],[20432,"Нефтекамск",140,3],[20451,"Арзамас",103,3],[20413,"Зеленодольск",100,3],
+[54,"Екатеринбург",1544,4],[56,"Челябинск",1189,4],[55,"Тюмень",869,4],[20680,"Магнитогорск",413,4],[20730,"Сургут",398,4],[20630,"Нижний Тагил",344,4],[53,"Курган",310,4],[20731,"Нижневартовск",283,4],[20681,"Златоуст",167,4],[20631,"Каменск-Уральский",165,4],[20683,"Копейск",155,4],[20682,"Миасс",151,4],[20632,"Первоуральск",148,4],[20732,"Нефтеюганск",130,4],[20750,"Новый Уренгой",118,4],[57,"Ханты-Мансийск",109,4],[20751,"Ноябрьск",107,4],[20710,"Тобольск",103,4],[20633,"Серов",97,4],[20635,"Верхняя Пышма",92,4],
+[65,"Новосибирск",1635,5],[62,"Красноярск",1196,5],[66,"Омск",1126,5],[63,"Иркутск",651,5],[197,"Барнаул",631,5],[67,"Томск",573,5],[64,"Кемерово",558,5],[20830,"Новокузнецк",539,5],[20850,"Братск",225,5],[20851,"Ангарск",224,5],[20810,"Бийск",199,5],[1096,"Абакан",188,5],[20831,"Прокопьевск",185,5],[20780,"Норильск",181,5],[20811,"Рубцовск",140,5],[1095,"Кызыл",130,5],[20760,"Бердск",113,5],[20781,"Ачинск",103,5],[1091,"Горно-Алтайск",65,5],
+[76,"Хабаровск",617,6],[75,"Владивосток",605,6],[198,"Улан-Удэ",439,6],[74,"Якутск",370,6],[1097,"Чита",350,6],[77,"Благовещенск",244,6],[20910,"Комсомольск-на-Амуре",241,6],[78,"Южно-Сахалинск",200,6],[79,"Петропавловск-Камчатский",179,6],[20890,"Уссурийск",172,6],[20891,"Находка",144,6],[20892,"Артём",119,6],[80,"Магадан",92,6],[1098,"Биробиджан",74,6],
+[1100,"Махачкала",612,7],[36,"Ставрополь",457,7],[1106,"Грозный",332,7],[1102,"Владикавказ",301,7],[1101,"Нальчик",240,7],[20980,"Пятигорск",149,7],[21001,"Хасавюрт",146,7],[20981,"Кисловодск",128,7],[21000,"Дербент",126,7],[21002,"Каспийск",124,7],[1103,"Черкесск",123,7],[20982,"Невинномысск",118,7],[21050,"Назрань",116,7],[20983,"Ессентуки",115,7],[20985,"Минеральные Воды",76,7],[20986,"Георгиевск",67,7],[20987,"Будённовск",63,7],[1104,"Магас",15,7],
+];
+const D=["Центральный ФО","Северо-Западный ФО","Южный ФО","Приволжский ФО","Уральский ФО","Сибирский ФО","Дальневосточный ФО","Северо-Кавказский ФО"];
+const MO_IDS=C.filter(c=>c[3]===0&&c[0]!==213&&c[2]<1000).map(c=>c[0]);
+const LO_IDS=C.filter(c=>c[3]===1&&c[0]!==2&&c[2]<400).map(c=>c[0]);
+
+let sel=new Map(),results={},running=false;
+
+document.addEventListener('DOMContentLoaded',()=>{
+  buildUI(); document.getElementById('kw').addEventListener('input',updKw);
+  ['proxy','token'].forEach(k=>{const v=localStorage.getItem('ws_'+k);if(v)document.getElementById(k).value=v});
+  if(localStorage.getItem('ws_theme')==='light')document.documentElement.classList.add('light');
+  updTI();
+});
+
+function togTheme(){document.documentElement.classList.toggle('light');localStorage.setItem('ws_theme',document.documentElement.classList.contains('light')?'light':'dark');updTI()}
+function updTI(){document.getElementById('tt').textContent=document.documentElement.classList.contains('light')?'☀️':'🌙'}
+
+// ============================================================
+// REGIONS UI
+// ============================================================
+function buildUI(){
+  const w=document.getElementById('rscroll');w.innerHTML='';
+  D.forEach((dn,di)=>{
+    const cities=C.filter(c=>c[3]===di).sort((a,b)=>b[2]-a[2]);
+    const d=document.createElement('div');d.className='dist';d.dataset.di=di;
+    d.innerHTML=`<div class="dh" onclick="togD(${di})"><div><span class="a" id="da${di}">▶</span>${dn}<span class="dc">(${cities.length})</span></div><button class="ds" onclick="event.stopPropagation();selD(${di})">всё</button></div><div class="db" id="db${di}"></div>`;
+    w.appendChild(d);
+    const body=d.querySelector('.db');
+    cities.forEach(c=>{
+      const ch=document.createElement('div');ch.className='cc';ch.textContent=c[1]+(c[2]>=1000?` ${(c[2]/1000).toFixed(1)}м`:c[2]>=100?` ${c[2]}к`:'');
+      ch.id='c'+c[0];ch.onclick=()=>togC(c[0],c[1]);body.appendChild(ch);
+    });
+  });
+}
+function togD(i){document.getElementById('db'+i).classList.toggle('o');document.getElementById('da'+i).classList.toggle('o')}
+function selD(i){C.filter(c=>c[3]===i).forEach(c=>sel.set(c[0],c[1]));rfr();usb()}
+function togC(id,name){if(sel.has(id))sel.delete(id);else sel.set(id,name);const e=document.getElementById('c'+id);if(e)e.classList.toggle('s',sel.has(id));usb();updQ()}
+function rfr(){document.querySelectorAll('.cc').forEach(e=>{const id=parseInt(e.id.slice(1));e.classList.toggle('s',sel.has(id))})}
+function clearR(){sel.clear();rfr();usb();updQ()}
+function preset(p){
+  const s=[...C].sort((a,b)=>b[2]-a[2]);
+  let l=[];
+  if(p==='top5')l=s.slice(0,5);else if(p==='top10')l=s.slice(0,10);else if(p==='top20')l=s.slice(0,20);
+  else if(p==='500k')l=s.filter(c=>c[2]>=500);else if(p==='250k')l=s.filter(c=>c[2]>=250);else if(p==='100k')l=s.filter(c=>c[2]>=100);
+  else if(p==='mo')l=C.filter(c=>MO_IDS.includes(c[0]));
+  else if(p==='lo')l=C.filter(c=>LO_IDS.includes(c[0]));
+  else if(p==='russia'){sel.set(225,'Вся Россия');rfr();usb();updQ();return}
+  l.forEach(c=>sel.set(c[0],c[1]));rfr();usb();updQ();
+}
+function usb(){
+  const bar=document.getElementById('sbar'),list=document.getElementById('sl');
+  document.getElementById('regC').textContent=sel.size;document.getElementById('sn').textContent=sel.size;
+  if(!sel.size){bar.classList.remove('v');return}
+  bar.classList.add('v');list.innerHTML='';
+  sel.forEach((n,id)=>{const t=document.createElement('div');t.className='st';t.innerHTML=`${n} <span class="x" onclick="togC(${id},'${n.replace(/'/g,"\\'")}')">&times;</span>`;list.appendChild(t)});
+}
+function filterR(){
+  const q=document.getElementById('rsearch').value.toLowerCase();
+  document.querySelectorAll('.dist').forEach(d=>{
+    const di=parseInt(d.dataset.di);let m=false;
+    d.querySelectorAll('.cc').forEach(ch=>{const id=parseInt(ch.id.slice(1));const c=C.find(x=>x[0]===id);
+      const v=c&&c[1].toLowerCase().includes(q);ch.style.display=v||!q?'':'none';if(v)m=true});
+    d.style.display=m||!q?'':'none';
+    if(q&&m){document.getElementById('db'+di).classList.add('o');document.getElementById('da'+di)?.classList.add('o')}
+  });
+}
+
+// ============================================================
+// KEYWORDS & QUOTA
+// ============================================================
+function getKw(){return document.getElementById('kw').value.split('\n').map(k=>k.trim()).filter(k=>k)}
+function updKw(){document.getElementById('kwC').textContent=getKw().length;updQ()}
+function updQ(){
+  const n=getKw().length,t=n*2;
+  document.getElementById('qKw').textContent=n;
+  const e=document.getElementById('qTot');e.textContent=t;
+  e.className='qv'+(t>500?' d':t>100?' w':'');
+}
+
+// ============================================================
+// API via proxy
+// ============================================================
+function getProxy(){return document.getElementById('proxy').value.trim()}
+function getToken(){return document.getElementById('token').value.trim()}
+
+async function wsAPI(endpoint, payload={}) {
+  const proxy=getProxy(), token=getToken();
+  if(!proxy)throw new Error('Введите URL прокси');
+  if(!token)throw new Error('Введите токен');
+
+  const r=await fetch(proxy,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({token,endpoint,payload})
+  });
+  if(!r.ok)throw new Error('Proxy HTTP '+r.status);
+  const j=await r.json();
+  if(j.error)throw new Error(j.error);
+  if(j.status&&j.status>=400)throw new Error(`API ${j.status}: ${JSON.stringify(j.data)}`);
+  return j.data;
+}
+
+async function testProxy(){
+  try{
+    const proxy=getProxy();if(!proxy){alert('Введите URL прокси');return}
+    const r=await fetch(proxy);const j=await r.json();
+    if(j.ok)log('✓ Прокси работает!','s');
+    else log('Прокси ответил: '+JSON.stringify(j),'i');
+  }catch(e){log('Ошибка прокси: '+e.message,'e');showErr('Прокси не доступен: '+e.message)}
+}
+
+async function checkQuota(){
+  try{
+    const j=await wsAPI('/userInfo');
+    const info=j.userInfo||j;
+    const rem=info.dailyLimitRemaining??'?',tot=info.dailyLimit??'?';
+    const el=document.getElementById('quotaB');el.classList.add('v');
+    document.getElementById('quotaT').textContent=`Квота: ${rem} / ${tot} запросов в день`;
+    log(`Квота: ${rem} / ${tot}`,'s');
+  }catch(e){log('Ошибка квоты: '+e.message,'e')}
+}
+
+// ============================================================
+// MAIN RUN
+// ============================================================
+async function run(){
+  if(running)return;
+  const proxy=getProxy();if(!proxy){alert('Введите URL прокси');return}
+  const token=getToken();if(!token){alert('Введите токен');return}
+  const kw=getKw();if(!kw.length){alert('Введите ключи');return}
+  if(!sel.size){alert('Выберите регионы');return}
+
+  localStorage.setItem('ws_proxy',proxy);localStorage.setItem('ws_token',token);
+  running=true;document.getElementById('startBtn').disabled=true;hideErr();results={};
+  sel.forEach((name,id)=>{results[id]={name,data:{}}});
+
+  const pw=document.getElementById('pw');pw.classList.add('v');
+  log(`Старт: ${kw.length} ключей → /regions (${kw.length*2} ед. квоты)`,'i');
+
+  let ok=0,fail=0;
+  for(let i=0;i<kw.length;i++){
+    const phrase=kw[i];
+    const pct=((i+1)/kw.length*100).toFixed(0);
+    document.getElementById('pf').style.width=pct+'%';
+    document.getElementById('pt').textContent=`${i+1}/${kw.length}: ${phrase}`;
+    document.getElementById('pp').textContent=pct+'%';
+
+    try{
+      const j=await wsAPI('/regions',{phrase});
+      const regions=j.regions||j.result||j.items||[];
+      const m={};regions.forEach(r=>{const rid=r.regionId??r.id;const cnt=Number(r.count??r.shows??0);if(rid!==undefined)m[rid]=cnt});
+      sel.forEach((_,id)=>{results[id].data[phrase]=m[id]??0});
+      ok++;log(`✓ [${i+1}] "${phrase}" — ${regions.length} регионов`,'s');
+    }catch(e){
+      fail++;log(`✗ [${i+1}] "${phrase}": ${e.message}`,'e');
+      sel.forEach((_,id)=>{results[id].data[phrase]='—'});
+      if(e.message.includes('429')){log('Ждём 60 сек...','i');await sleep(60000)}
+    }
+    await sleep(300);
+  }
+
+  document.getElementById('pf').style.width='100%';
+  document.getElementById('pt').textContent=`Готово: ${ok} успешно, ${fail} ошибок`;
+  document.getElementById('pp').textContent='100%';
+  log(`Завершено: ${ok}/${kw.length} успешно`,'s');
+  renderRes(kw);
+  running=false;document.getElementById('startBtn').disabled=false;
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+// ============================================================
+// LOG
+// ============================================================
+function log(m,t='i'){const p=document.getElementById('lp'),b=document.getElementById('lb');p.classList.add('v');b.innerHTML+=`<div class="le ${t}">[${new Date().toLocaleTimeString('ru')}] ${m}</div>`;b.scrollTop=b.scrollHeight}
+function showErr(m){document.getElementById('errB').classList.add('v');document.getElementById('errT').textContent=m}
+function hideErr(){document.getElementById('errB').classList.remove('v')}
+
+// ============================================================
+// RESULTS
+// ============================================================
+function renderRes(kw){
+  document.getElementById('rp').classList.add('v');
+  const re=Object.entries(results);if(!re.length)return;
+  let h='<tr><th>Ключевой запрос</th>';re.forEach(([_,{name}])=>h+=`<th>${name}</th>`);
+  document.getElementById('tH').innerHTML=h+'</tr>';
+  let b='';kw.forEach(k=>{b+='<tr><td>'+k.replace(/</g,'&lt;')+'</td>';
+    re.forEach(([_,{data}])=>{const v=data[k];let c='n';
+      if(typeof v==='number'){if(v>=5000)c+=' h';else if(v>=1000)c+=' m';else if(v<100)c+=' l';b+=`<td class="${c}">${v.toLocaleString('ru')}</td>`}
+      else b+=`<td class="n l">${v??'—'}</td>`});b+='</tr>'});
+  document.getElementById('tB').innerHTML=b;
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function getTD(){const re=Object.entries(results),kw=getKw();return{h:['Ключевой запрос',...re.map(([_,{name:n}])=>n)],r:kw.map(k=>[k,...re.map(([_,{data:d}])=>d[k]??'')])}}
+function dlCSV(){const{h,r}=getTD();let c='\uFEFF'+h.join(';')+'\n';r.forEach(x=>c+=x.join(';')+'\n');dl(c,'wordstat.csv','text/csv;charset=utf-8')}
+function dlTSV(){const{h,r}=getTD();let c=h.join('\t')+'\n';r.forEach(x=>c+=x.join('\t')+'\n');dl(c,'wordstat.tsv','text/tab-separated-values')}
+function dl(c,n,t){const b=new Blob([c],{type:t}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}
+function copyT(){const{h,r}=getTD();let t=h.join('\t')+'\n';r.forEach(x=>t+=x.join('\t')+'\n');navigator.clipboard.writeText(t).then(()=>{const b=event.target;const o=b.textContent;b.textContent='✓ OK';setTimeout(()=>b.textContent=o,1200)})}
+function clearAll(){document.getElementById('kw').value='';clearR();results={};document.getElementById('rp').classList.remove('v');document.getElementById('lp').classList.remove('v');document.getElementById('lb').innerHTML='';document.getElementById('pw').classList.remove('v');hideErr();document.getElementById('quotaB').classList.remove('v');updKw()}
+</script>
+</body>
+</html>
