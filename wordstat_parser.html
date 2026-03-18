@@ -154,7 +154,7 @@ table.rt{width:100%;border-collapse:collapse;font-size:11px}
   <div class="header">
     <div class="header-left"><div class="logo">W</div><h1>Wordstat Parser</h1></div>
     <div class="header-right">
-      <span class="badge">API v1 · /regions · GAS Proxy</span>
+      <span class="badge">v2.4 · API v1 · /regions · GAS Proxy</span>
       <div class="theme-toggle" id="tt" onclick="togTheme()">🌙</div>
     </div>
   </div>
@@ -319,9 +319,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   ['proxy','token'].forEach(k=>{const v=localStorage.getItem('ws_'+k);if(v)document.getElementById(k).value=v});
   if(localStorage.getItem('ws_theme')==='light')document.documentElement.classList.add('light');
   updTI();
+  // Clear stale cache from old versions
+  const CACHE_VER='v2.4';
+  if(localStorage.getItem('ws_tree_ver')!==CACHE_VER){localStorage.removeItem('ws_tree');localStorage.setItem('ws_tree_ver',CACHE_VER)}
   // Try cached tree
   const cached=localStorage.getItem('ws_tree');
-  if(cached){try{regionTree=JSON.parse(cached);switchToTree();toast('Регионы из кэша','ok',2000)}catch(e){}}
+  if(cached){try{regionTree=JSON.parse(cached);flatNames(regionTree);switchToTree();toast('Регионы из кэша','ok',2000)}catch(e){localStorage.removeItem('ws_tree')}}
 });
 
 // ============================================================
@@ -472,38 +475,50 @@ async function loadTree(){
   const btn=document.getElementById('loadBtn');btn.classList.add('loading');btn.textContent='⏳ Загрузка...';
   try{
     const j=await wsAPI('/getRegionsTree',{});
-    // Robust root finding
+    // Debug: log raw response structure
+    const topKeys=Object.keys(j);
+    log(`Дерево API: ключи верхнего уровня=[${topKeys.join(',')}]`,'i');
+
+    // First: deep extract ALL names from raw response (before any simplification)
+    const namesBefore=Object.keys(regionNames).length;
+    deepExtractNames(j);
+    log(`Deep extract: ${Object.keys(regionNames).length - namesBefore} новых имён из сырого ответа`,'i');
+
+    // Now build tree for UI
     let root=j;
     if(j.result)root=j.result;else if(j.regions)root=j.regions;else if(j.items)root=j.items;else if(j.data)root=j.data;
     if(!Array.isArray(root)){
-      if(root.children)root=[root];
+      if(root.children||root.items||root.regions||root.sub)root=[root];
       else root=[root];
+    }
+    // Log sample node
+    if(Array.isArray(root)&&root.length>0){
+      const s=root[0];
+      log(`Пример узла: ключи=[${Object.keys(s).join(',')}] ${JSON.stringify(s).slice(0,150)}`,'i');
     }
     // Find Russia node
     let ru=null;
     function findRu(nodes){
       if(!nodes||!Array.isArray(nodes)||ru)return;
       for(const n of nodes){
-        const id=n.id??n.regionId??n.code??n.geoId;
+        const id=n.id??n.regionId??n.code??n.geoId??n.region_id;
         const nm=String(n.name??n.title??n.caption??n.text??'');
         if(String(id)==='225'||nm.toLowerCase().includes('россия')){ru=n;return}
-        const ch=n.children??n.items??n.regions;
+        const ch=n.children??n.items??n.regions??n.sub??n.subregions;
         if(Array.isArray(ch))findRu(ch);
       }
     }
     findRu(root);
     if(!ru){
-      // Maybe root IS Russia
       if(root.length===1)ru=root[0];
       else ru={id:225,name:'Россия',children:root};
     }
     regionTree=simplify(ru);
-    // Merge tree names into existing (keep static city names)
     flatNames(regionTree);
     localStorage.setItem('ws_tree',JSON.stringify(regionTree));
     switchToTree();
-    toast(`Загружено ${Object.keys(regionNames).length} регионов`,'ok');
-    log(`Дерево: ${Object.keys(regionNames).length} регионов`,'s');
+    toast(`Загружено ${Object.keys(regionNames).length} имён регионов`,'ok');
+    log(`Итого имён: ${Object.keys(regionNames).length}`,'s');
   }catch(e){
     toast('Ошибка загрузки: '+e.message,'err');
     log('Ошибка дерева: '+e.message,'e');
@@ -512,13 +527,33 @@ async function loadTree(){
 }
 
 function simplify(n){
-  const id=n.id??n.regionId??n.code??n.geoId??null;
-  const name=String(n.name??n.title??n.caption??n.text??'');
-  const ch=n.children??n.items??n.regions;
-  const children=Array.isArray(ch)?ch.map(simplify):[];
-  return{id:Number(id),name,children};
+  const id=n.id??n.regionId??n.code??n.geoId??n.region_id??null;
+  const name=String(n.name??n.title??n.caption??n.text??n.regionName??n.region_name??'');
+  // Try multiple children fields
+  let ch=n.children??n.items??n.regions??n.sub??n.subregions??n.childs;
+  if(!Array.isArray(ch))ch=[];
+  const children=ch.map(simplify);
+  return{id:id!=null?Number(id):null,name,children};
 }
-function flatNames(n){if(n.id!=null&&n.name)regionNames[n.id]=n.name;if(n.children)n.children.forEach(flatNames)}
+function flatNames(n){
+  if(n.id!=null&&n.name&&String(n.name).trim())regionNames[n.id]=n.name;
+  if(n.children)n.children.forEach(flatNames);
+}
+// Deep flatten - extract ALL ids/names from any nested structure
+function deepExtractNames(obj,depth=0){
+  if(!obj||depth>10)return;
+  if(Array.isArray(obj)){obj.forEach(item=>deepExtractNames(item,depth+1));return}
+  if(typeof obj!=='object')return;
+  const id=obj.id??obj.regionId??obj.code??obj.geoId??obj.region_id;
+  const name=obj.name??obj.title??obj.caption??obj.text??obj.regionName??obj.region_name;
+  if(id!=null&&name&&String(name).trim())regionNames[Number(id)]=String(name);
+  // Recurse into all array/object values
+  for(const key of Object.keys(obj)){
+    const val=obj[key];
+    if(Array.isArray(val))val.forEach(item=>deepExtractNames(item,depth+1));
+    else if(val&&typeof val==='object')deepExtractNames(val,depth+1);
+  }
+}
 
 function switchToTree(){
   treeMode=true;
@@ -674,11 +709,23 @@ async function run(){
       try{
         const j=await wsAPI('/regions',{phrase});
         const regions=j.regions||j.result||j.items||[];
+        // Debug: log first element structure on first keyword
+        if(i===0&&regions.length>0){
+          const sample=regions[0];
+          log(`API ответ: ключи=[${Object.keys(sample).join(',')}] пример=${JSON.stringify(sample).slice(0,200)}`,'i');
+        }
         const m={};
         regions.forEach(r=>{
-          const rid=r.regionId??r.id;
-          const cnt=Number(r.count??r.shows??0);
-          if(rid!==undefined){m[rid]=cnt;if(!regionNames[rid]){const nm=r.name||r.regionName||r.title||r.caption;if(nm)regionNames[rid]=nm}}
+          const rid=r.regionId??r.id??r.region_id??r.geo_id;
+          const cnt=Number(r.count??r.shows??r.impressions??r.cnt??0);
+          if(rid!==undefined){
+            m[rid]=cnt;
+            // Try every possible name field
+            if(!regionNames[rid]){
+              const nm=r.name||r.regionName||r.region_name||r.title||r.caption||r.text||r.geo_name||null;
+              if(nm)regionNames[rid]=nm;
+            }
+          }
         });
         fullData[phrase]=m;ok++;
         log(`✓ [${i+1}] "${phrase}" — ${regions.length} рег.`,'s');
@@ -732,26 +779,28 @@ function renderRes(kw){
 
 async function showFull(){
   const kw=getKw();if(!kw.length||!Object.keys(fullData).length)return;
-  // Collect all region IDs from data
   const allRids=new Set();Object.values(fullData).forEach(m=>Object.keys(m).forEach(k=>allRids.add(Number(k))));
   const rids=[...allRids].sort((a,b)=>a-b);
-  // Check for unknown names
   const unknowns=rids.filter(id=>!regionNames[id]);
-  if(unknowns.length>0&&!regionTree){
+  if(unknowns.length>0){
     toast('Загружаю имена регионов...','warn',5000);
     log(`${unknowns.length} регионов без имён, загружаю дерево...`,'i');
     try{
       const j=await wsAPI('/getRegionsTree',{});
+      // Deep extract all names from raw response
+      deepExtractNames(j);
+      // Also build tree for future use
       let root=j;
       if(j.result)root=j.result;else if(j.regions)root=j.regions;else if(j.items)root=j.items;else if(j.data)root=j.data;
-      if(!Array.isArray(root))root=root.children?[root]:[root];
+      if(!Array.isArray(root))root=(root.children||root.items||root.regions)?[root]:[root];
       let ru=null;
-      function findRu(nodes){if(!nodes||!Array.isArray(nodes)||ru)return;for(const n of nodes){const id=n.id??n.regionId??n.code??n.geoId;const nm=String(n.name??n.title??n.caption??n.text??'');if(String(id)==='225'||nm.toLowerCase().includes('россия')){ru=n;return}const ch=n.children??n.items??n.regions;if(Array.isArray(ch))findRu(ch)}}
+      function findRu(nodes){if(!nodes||!Array.isArray(nodes)||ru)return;for(const n of nodes){const id=n.id??n.regionId??n.code??n.geoId??n.region_id;const nm=String(n.name??n.title??n.caption??n.text??'');if(String(id)==='225'||nm.toLowerCase().includes('россия')){ru=n;return}const ch=n.children??n.items??n.regions??n.sub;if(Array.isArray(ch))findRu(ch)}}
       findRu(root);
       if(!ru)ru=root.length===1?root[0]:{id:225,name:'Россия',children:root};
       regionTree=simplify(ru);flatNames(regionTree);
       localStorage.setItem('ws_tree',JSON.stringify(regionTree));
-      log(`Дерево загружено: ${Object.keys(regionNames).length} имён`,'s');
+      const afterUnknowns=rids.filter(id=>!regionNames[id]).length;
+      log(`Имена загружены: ${Object.keys(regionNames).length} всего, ${unknowns.length-afterUnknowns} новых`,'s');
     }catch(e){log('Не удалось загрузить имена: '+e.message,'e')}
   }
   document.getElementById('rpF').classList.add('v');
