@@ -19,34 +19,25 @@ html.light{--bg:#f4f5f7;--surface:#fff;--surface-2:#f0f1f4;--surface-3:#e6e8ed;-
 .badge{font-size:11px;font-weight:600;background:var(--surface-2);border:1px solid var(--border);padding:4px 10px;border-radius:20px;color:var(--text-muted)}
 .tt{width:36px;height:36px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--text-muted)}
 .tt:hover{border-color:var(--accent);color:var(--text)}
-/* Banners & alerts */
 .ban{border-radius:var(--radius);padding:10px 14px;margin-bottom:12px;font-size:12px;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
 .ban a{color:inherit;text-decoration:underline}
 .ban code{font-family:'JetBrains Mono',monospace;font-size:10px;background:rgba(0,0,0,.15);padding:1px 4px;border-radius:3px}
 .bi{background:var(--yellow-dim);border:1px solid rgba(255,217,61,.2);color:var(--yellow)}
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;padding:12px 24px;border-radius:var(--radius);font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3);display:none;max-width:90vw;text-align:center}
-.toast.v{display:block;animation:fadeIn .3s}
-.toast.ok{background:#0d6b4a;color:#fff;border:1px solid var(--green)}
-.toast.err{background:#6b1a1a;color:#fff;border:1px solid var(--red)}
-.toast.warn{background:#6b5a0d;color:#fff;border:1px solid var(--yellow)}
-@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-/* Config */
-.cfg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);flex-wrap:wrap}
-.cfg label{font-size:12px;font-weight:600;color:var(--text-muted);white-space:nowrap}
-.cfg input{flex:1;min-width:180px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none}
-.cfg input:focus{border-color:var(--accent)}
-.cfg .bs{font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;padding:6px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);cursor:pointer;white-space:nowrap}
-.cfg .bs:hover{border-color:var(--accent);color:var(--accent)}
-/* Collapsible help */
+.toast.v{display:block;animation:fi .3s}.toast.ok{background:#0d6b4a;color:#fff;border:1px solid var(--green)}.toast.err{background:#6b1a1a;color:#fff;border:1px solid var(--red)}.toast.warn{background:#6b5a0d;color:#fff;border:1px solid var(--yellow)}
+@keyframes fi{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 .help-toggle{font-size:12px;color:var(--accent);cursor:pointer;margin-bottom:12px;display:inline-block}
 .help-toggle:hover{text-decoration:underline}
 .help-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px;font-size:12px;line-height:1.7;display:none;color:var(--text-muted)}
-.help-box.v{display:block}
-.help-box ol{margin-left:18px;margin-top:6px}
-.help-box li{margin-bottom:6px}
+.help-box.v{display:block}.help-box ol{margin-left:18px;margin-top:6px}.help-box li{margin-bottom:6px}
 .help-box code{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--surface-2);padding:1px 4px;border-radius:3px;color:var(--text);word-break:break-all}
 .help-box b{color:var(--text)}
-/* Grid */
+.cfg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);flex-wrap:wrap}
+.cfg label{font-size:12px;font-weight:600;color:var(--text-muted);white-space:nowrap}
+.cfg input{flex:1;min-width:180px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;outline:none}
+.cfg input:focus{border-color:var(--accent)}.cfg input::placeholder{color:var(--text-dim)}
+.cfg .bs{font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;padding:6px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);cursor:pointer;white-space:nowrap}
+.cfg .bs:hover{border-color:var(--accent);color:var(--accent)}
 .main-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:14px}
 @media(max-width:960px){.main-grid{grid-template-columns:1fr}}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
@@ -54,45 +45,44 @@ html.light{--bg:#f4f5f7;--surface:#fff;--surface-2:#f0f1f4;--surface-3:#e6e8ed;-
 .ph h2{font-size:13px;font-weight:700}
 .cnt{font-size:11px;font-weight:600;background:var(--surface-3);padding:2px 8px;border-radius:10px;color:var(--text-muted)}
 .pb{padding:12px 16px}
-textarea.kw{width:100%;min-height:320px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;resize:vertical;outline:none}
-textarea.kw:focus{border-color:var(--accent)}
-textarea.kw::placeholder{color:var(--text-dim)}
+textarea.kw{width:100%;min-height:340px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;resize:vertical;outline:none}
+textarea.kw:focus{border-color:var(--accent)}textarea.kw::placeholder{color:var(--text-dim)}
 .hint{margin-top:4px;font-size:10px;color:var(--text-dim)}
-/* Regions */
 .rsearch{width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px 8px 30px;color:var(--text);font-size:12px;outline:none;margin-bottom:8px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c5c75' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:10px center}
 .rsearch:focus{border-color:var(--accent)}
 .qbtns{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
 .qb{font-family:'Manrope',sans-serif;font-size:10px;font-weight:600;padding:3px 7px;border-radius:4px;border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);cursor:pointer;transition:all .12s}
 .qb:hover{border-color:var(--accent);color:var(--accent)}
-.rscroll{max-height:220px;overflow-y:auto}
-.dist{margin-bottom:2px}
-.dh{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;cursor:pointer;border-radius:var(--radius-sm);background:var(--surface-2);margin-bottom:1px;font-size:12px;font-weight:700}
-.dh:hover{background:var(--surface-3)}
-.dh .a{font-size:9px;color:var(--text-dim);transition:transform .2s;display:inline-block;margin-right:5px}
-.dh .a.o{transform:rotate(90deg)}
-.dc{font-size:10px;color:var(--text-dim);margin-left:4px}
-.ds{font-family:'Manrope',sans-serif;font-size:10px;font-weight:600;padding:2px 6px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer}
-.ds:hover{border-color:var(--accent);color:var(--accent)}
-.db{display:none;padding:4px 0 4px 8px}
-.db.o{display:flex;flex-wrap:wrap;gap:3px}
-.cc{font-size:10px;font-weight:500;padding:2px 8px;border-radius:12px;background:var(--surface-2);border:1px solid var(--border);color:var(--text-muted);cursor:pointer;transition:all .1s;user-select:none;white-space:nowrap}
-.cc:hover{border-color:var(--border-hover);color:var(--text)}
-.cc.s{background:var(--accent-glow);border-color:var(--accent);color:var(--text)}
+.qb.loading{opacity:.5;pointer-events:none}
+.rscroll{max-height:250px;overflow-y:auto}
+.rnode{margin-bottom:1px}
+.rnh{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;cursor:pointer;border-radius:var(--radius-sm);transition:background .1s;font-size:11px}
+.rnh:hover{background:var(--surface-2)}
+.rnh.l0{background:var(--surface-2);font-weight:700;font-size:12px}
+.rnh.l1{padding-left:16px;font-weight:600}
+.rnh.l2{padding-left:28px;font-weight:500;color:var(--text-muted)}
+.rnh.l3{padding-left:40px;font-weight:400;color:var(--text-dim);font-size:10px}
+.rnh .a{font-size:9px;color:var(--text-dim);transition:transform .2s;display:inline-block;margin-right:4px}
+.rnh .a.o{transform:rotate(90deg)}
+.rnh .sel-btn{font-family:'Manrope',sans-serif;font-size:9px;font-weight:600;padding:1px 5px;border-radius:3px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer}
+.rnh .sel-btn:hover{border-color:var(--accent);color:var(--accent)}
+.rnh.selected{background:var(--accent-glow)}
+.rnh.selected .sel-btn{border-color:var(--accent);color:var(--accent)}
+.rnb{display:none}.rnb.o{display:block}
+.empty-msg{padding:20px;text-align:center;color:var(--text-dim);font-size:12px}
 .sbar{margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:none}
 .sbar.v{display:block}
 .sbar-t{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;display:flex;justify-content:space-between}
 .sbar-t button{font-family:'Manrope',sans-serif;font-size:10px;font-weight:600;color:var(--red);cursor:pointer;background:none;border:none}
-.sl{display:flex;flex-wrap:wrap;gap:2px;max-height:50px;overflow-y:auto}
+.sl{display:flex;flex-wrap:wrap;gap:2px;max-height:60px;overflow-y:auto}
 .st{font-size:9px;font-weight:600;padding:2px 5px;border-radius:3px;background:var(--green-dim);color:var(--green);display:flex;align-items:center;gap:2px}
 .st .x{cursor:pointer;opacity:.6;font-size:11px}.st .x:hover{opacity:1}
-/* Quota + Progress */
 .qbar{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;margin-bottom:12px;font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:var(--shadow)}
 .qv{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--text)}.qv.w{color:var(--yellow)}.qv.d{color:var(--red)}
 .pw{display:none;margin-bottom:12px}.pw.v{display:block}
 .pbar{width:100%;height:6px;background:var(--surface-3);border-radius:3px;overflow:hidden}
 .pfill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s}
 .ptxt{font-size:11px;color:var(--text-muted);margin-top:4px;display:flex;justify-content:space-between}
-/* Action */
 .action-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .btn{font-family:'Manrope',sans-serif;font-size:13px;font-weight:700;padding:10px 24px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all .2s}
 .btn-primary{background:var(--accent);color:#fff;box-shadow:0 0 16px var(--accent-glow)}
@@ -100,7 +90,6 @@ textarea.kw::placeholder{color:var(--text-dim)}
 .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:none}
 .btn-secondary{background:var(--surface-2);color:var(--text-muted);border:1px solid var(--border)}
 .btn-secondary:hover{border-color:var(--border-hover);color:var(--text)}
-/* Results */
 .rp{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:none;box-shadow:var(--shadow);margin-bottom:14px}
 .rp.v{display:block}
 .rh{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
@@ -108,7 +97,6 @@ textarea.kw::placeholder{color:var(--text-dim)}
 .ra{display:flex;gap:5px;flex-wrap:wrap}
 .rbs{font-family:'Manrope',sans-serif;font-size:11px;font-weight:600;padding:5px 10px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface-2);color:var(--text-muted);cursor:pointer}
 .rbs:hover{border-color:var(--border-hover);color:var(--text)}
-.rbs.active{border-color:var(--accent);color:var(--accent)}
 .tw{overflow-x:auto;max-height:500px;overflow-y:auto}
 table.rt{width:100%;border-collapse:collapse;font-size:11px}
 .rt thead{position:sticky;top:0;z-index:2}
@@ -116,11 +104,9 @@ table.rt{width:100%;border-collapse:collapse;font-size:11px}
 .rt th:first-child{position:sticky;left:0;z-index:3;background:var(--surface-3)}
 .rt td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}
 .rt td:first-child{position:sticky;left:0;background:var(--surface);font-weight:500;z-index:1}
-.rt tbody tr:hover td{background:var(--surface-2)}
-.rt tbody tr:hover td:first-child{background:var(--surface-2)}
+.rt tbody tr:hover td{background:var(--surface-2)}.rt tbody tr:hover td:first-child{background:var(--surface-2)}
 .rt td.n{font-family:'JetBrains Mono',monospace;text-align:right}
 .rt td.h{color:var(--green);font-weight:600}.rt td.m{color:var(--yellow)}.rt td.l{color:var(--text-dim)}
-/* Log */
 .lp{margin-top:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;display:none}
 .lp.v{display:block}
 .lph{padding:8px 16px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;display:flex;justify-content:space-between}
@@ -131,7 +117,6 @@ table.rt{width:100%;border-collapse:collapse;font-size:11px}
 <body>
 <div class="app">
   <div id="toast" class="toast"></div>
-
   <div class="header">
     <div class="header-left"><div class="logo">W</div><h1>Wordstat Parser</h1></div>
     <div class="header-right">
@@ -139,36 +124,29 @@ table.rt{width:100%;border-collapse:collapse;font-size:11px}
       <div class="tt" onclick="togTheme()">🌙</div>
     </div>
   </div>
-
-  <div class="ban bi">⚡ <b>/regions</b> — 1 запрос на ключ = все регионы РФ (2 ед. квоты). Автоматический ретрай при ошибках лимита.</div>
-
-  <span class="help-toggle" onclick="document.getElementById('helpBox').classList.toggle('v')">📖 Как получить Bearer Token? (нажми)</span>
-  <div class="help-box" id="helpBox">
-    <b>Получение токена (всё в браузере, без терминала):</b>
+  <div class="ban bi">⚡ <b>/regions</b> — 1 запрос на ключ = данные по ВСЕМ регионам РФ (2 ед. квоты). Дерево регионов загружается из API (бесплатно). Можно выбирать округа, области и города.</div>
+  <span class="help-toggle" onclick="document.getElementById('hb').classList.toggle('v')">📖 Как получить Bearer Token?</span>
+  <div class="help-box" id="hb">
+    <b>Получение токена (всё в браузере):</b>
     <ol>
-      <li>Зайди на <a href="https://oauth.yandex.ru/" target="_blank">oauth.yandex.ru</a> → создай приложение. В настройках приложения: <b>Redirect URI</b> → выбери «Подставить URL для разработки». Запиши свой <b>CLIENT_ID</b>.</li>
-      <li>Подай заявку на доступ к <b>API Вордстата</b>: зайди на <a href="https://wordstat.yandex.ru" target="_blank">wordstat.yandex.ru</a> → профиль (аватарка) → «<b>Доступ к API</b>» → заполни форму, указав свой CLIENT_ID.</li>
-      <li>Получи токен — открой в браузере эту ссылку (подставь свой CLIENT_ID):<br>
-        <code>https://oauth.yandex.ru/authorize?response_type=token&client_id=ТВОЙ_CLIENT_ID</code><br>
-        Разреши доступ. Тебя перекинет на страницу — <b>в адресной строке</b> браузера будет URL вида:<br>
-        <code>https://oauth.yandex.ru/verification_code#access_token=ТВОЙ_ТОКЕН&token_type=bearer&...</code><br>
-        Скопируй значение после <b>access_token=</b> и до <b>&</b> — это твой Bearer Token.
-      </li>
+      <li>Зайди на <a href="https://oauth.yandex.ru/" target="_blank">oauth.yandex.ru</a> → создай приложение. Redirect URI → «Подставить URL для разработки». Запиши <b>CLIENT_ID</b>.</li>
+      <li>Подай заявку на <b>API Вордстата</b>: <a href="https://wordstat.yandex.ru" target="_blank">wordstat.yandex.ru</a> → профиль → «Доступ к API» → укажи CLIENT_ID.</li>
+      <li>Открой в браузере:<br><code>https://oauth.yandex.ru/authorize?response_type=token&client_id=ТВОЙ_CLIENT_ID</code><br>
+        Разреши доступ. В <b>адресной строке</b> будет:<br><code>...#access_token=ТВОЙ_ТОКЕН&token_type=bearer&...</code><br>
+        Скопируй значение <b>access_token</b> — это Bearer Token.</li>
     </ol>
-    <b>Прокси:</b> Proxy URL уже настроен администратором. Если нужно своё — создайте Google Apps Script Web App (инструкция у администратора).
   </div>
 
   <div class="cfg">
     <label>🔗 Proxy URL</label>
-    <input type="text" id="proxy" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off">
+    <input type="text" id="proxy" placeholder="https://script.google.com/macros/s/.../exec">
     <button class="bs" onclick="testProxy()">Тест</button>
   </div>
   <div class="cfg">
-    <label>🔑 Bearer Token</label>
-    <input type="password" id="token" placeholder="OAuth-токен Wordstat API..." autocomplete="off">
+    <label>🔑 Token</label>
+    <input type="password" id="token" placeholder="OAuth-токен Wordstat API...">
     <button class="bs" onclick="checkQuota()">Квота</button>
   </div>
-
   <div class="qbar">
     <span>Расход:</span>
     <span>Ключей: <span class="qv" id="qKw">0</span></span>
@@ -181,27 +159,19 @@ table.rt{width:100%;border-collapse:collapse;font-size:11px}
     <div class="panel">
       <div class="ph"><h2>Ключевые запросы</h2><span class="cnt" id="kwC">0</span></div>
       <div class="pb">
-        <textarea class="kw" id="kw" placeholder="Каждый ключ с новой строки:&#10;&#10;ремонт ванной под ключ&#10;ремонт ванной комнаты&#10;демонтаж&#10;наливной пол&#10;стяжка пола"></textarea>
-        <div class="hint">1 ключ = 2 ед. квоты (/regions возвращает все регионы).</div>
+        <textarea class="kw" id="kw" placeholder="Каждый ключ с новой строки:&#10;&#10;ремонт ванной под ключ&#10;ремонт ванной комнаты&#10;демонтаж&#10;наливной пол"></textarea>
+        <div class="hint">1 ключ = 2 ед. квоты. /regions возвращает все регионы сразу.</div>
       </div>
     </div>
     <div class="panel">
-      <div class="ph"><h2>Регионы для таблицы</h2><span class="cnt" id="regC">0</span></div>
+      <div class="ph"><h2>Регионы (округа / области / города)</h2><span class="cnt" id="regC">0</span></div>
       <div class="pb">
-        <input type="text" class="rsearch" id="rsearch" placeholder="Поиск города..." oninput="filterR()">
+        <input type="text" class="rsearch" id="rsearch" placeholder="Поиск региона..." oninput="filterR()">
         <div class="qbtns">
-          <button class="qb" onclick="preset('top5')">🏆 Топ-5</button>
-          <button class="qb" onclick="preset('top10')">🏙 Топ-10</button>
-          <button class="qb" onclick="preset('top20')">📊 Топ-20</button>
-          <button class="qb" onclick="preset('500k')">🔵 >500к</button>
-          <button class="qb" onclick="preset('250k')">🟢 >250к</button>
-          <button class="qb" onclick="preset('100k')">🟡 >100к</button>
-          <button class="qb" onclick="preset('mo')">📍 МО</button>
-          <button class="qb" onclick="preset('lo')">📍 ЛО</button>
-          <button class="qb" onclick="preset('russia')">🇷🇺 Вся РФ</button>
-          <button class="qb" onclick="clearR()">✕</button>
+          <button class="qb" id="loadBtn" onclick="loadTree()">📥 Загрузить регионы из API</button>
+          <button class="qb" onclick="clearR()">✕ Сбросить</button>
         </div>
-        <div class="rscroll" id="rscroll"></div>
+        <div class="rscroll" id="rscroll"><div class="empty-msg">Нажмите «Загрузить регионы из API» чтобы получить полное дерево регионов</div></div>
         <div class="sbar" id="sbar">
           <div class="sbar-t"><span>Выбрано: <span id="sn">0</span></span><button onclick="clearR()">очистить</button></div>
           <div class="sl" id="sl"></div>
@@ -210,34 +180,28 @@ table.rt{width:100%;border-collapse:collapse;font-size:11px}
     </div>
   </div>
 
-  <div class="pw" id="pw">
-    <div class="pbar"><div class="pfill" id="pf"></div></div>
-    <div class="ptxt"><span id="pt"></span><span id="pp"></span></div>
-  </div>
+  <div class="pw" id="pw"><div class="pbar"><div class="pfill" id="pf"></div></div><div class="ptxt"><span id="pt"></span><span id="pp"></span></div></div>
 
   <div class="action-bar">
     <button class="btn btn-primary" id="startBtn" onclick="run()">Запустить парсинг</button>
     <button class="btn btn-secondary" onclick="clearAll()">Очистить</button>
   </div>
 
-  <!-- Selected regions table -->
   <div class="rp" id="rp">
     <div class="rh"><h2>📊 Результаты (выбранные регионы)</h2><div class="ra">
       <button class="rbs" onclick="copyT('sel')">📋 Копировать</button>
       <button class="rbs" onclick="dlCSV('sel')">💾 CSV</button>
       <button class="rbs" onclick="dlTSV('sel')">📄 TSV</button>
-      <button class="rbs" onclick="showFull()" id="fullBtn">🌍 Полная таблица</button>
+      <button class="rbs" onclick="showFull()">🌍 Полная таблица</button>
     </div></div>
     <div class="tw"><table class="rt"><thead id="tH"></thead><tbody id="tB"></tbody></table></div>
   </div>
-
-  <!-- Full table (all regions) -->
-  <div class="rp" id="rpFull">
+  <div class="rp" id="rpF">
     <div class="rh"><h2>🌍 Полная таблица (все регионы)</h2><div class="ra">
       <button class="rbs" onclick="copyT('full')">📋 Копировать</button>
       <button class="rbs" onclick="dlCSV('full')">💾 CSV</button>
       <button class="rbs" onclick="dlTSV('full')">📄 TSV</button>
-      <button class="rbs" onclick="hideFull()">✕ Скрыть</button>
+      <button class="rbs" onclick="document.getElementById('rpF').classList.remove('v')">✕ Скрыть</button>
     </div></div>
     <div class="tw"><table class="rt"><thead id="tHF"></thead><tbody id="tBF"></tbody></table></div>
   </div>
@@ -249,228 +213,231 @@ table.rt{width:100%;border-collapse:collapse;font-size:11px}
 </div>
 
 <script>
-// ============================================================
-// CITIES: [id, name, pop_k, district]
-// ============================================================
-const C=[
-[213,"Москва",13104,0],[10728,"Балашиха",540,0],[10740,"Подольск",366,0],[10753,"Химки",265,0],[10725,"Мытищи",264,0],[10734,"Королёв",227,0],[10738,"Люберцы",218,0],[10735,"Красногорск",191,0],[10743,"Одинцово",182,0],[10719,"Домодедово",173,0],[10723,"Электросталь",157,0],[10748,"Раменское",132,0],[10729,"Коломна",140,0],[21622,"Щёлково",139,0],[10741,"Серпухов",125,0],[10745,"Пушкино",118,0],[20545,"Долгопрудный",115,0],[10733,"Орехово-Зуево",115,0],[10742,"Жуковский",111,0],[10747,"Реутов",108,0],[10726,"Ногинск",104,0],[10716,"Видное",103,0],[10750,"Сергиев Посад",98,0],[10737,"Лобня",94,0],[10718,"Воскресенск",94,0],[10730,"Клин",79,0],[10727,"Наро-Фоминск",77,0],[21623,"Чехов",76,0],[10720,"Дубна",75,0],[10721,"Егорьевск",72,0],[20543,"Дзержинский",68,0],[21626,"Дмитров",67,0],[10746,"Ступино",65,0],[10744,"Павловский Посад",64,0],[10751,"Солнечногорск",62,0],[10724,"Ивантеевка",62,0],[10739,"Фрязино",60,0],[10736,"Лыткарино",60,0],[10732,"Кашира",48,0],[20544,"Котельники",45,0],[10749,"Протвино",35,0],[10731,"Истра",53,0],[10717,"Волоколамск",19,0],
-[193,"Воронеж",1058,0],[15,"Тула",467,0],[16,"Ярославль",608,0],[11,"Рязань",539,0],[14,"Тверь",425,0],[9,"Липецк",503,0],[6,"Калуга",349,0],[192,"Владимир",354,0],[8,"Курск",450,0],[12,"Смоленск",325,0],[191,"Брянск",399,0],[18,"Орёл",303,0],[13,"Тамбов",292,0],[5,"Иваново",397,0],[4,"Белгород",394,0],[7,"Кострома",277,0],
-[2,"Санкт-Петербург",5600,1],[22,"Калининград",512,1],[20,"Архангельск",349,1],[23,"Мурманск",270,1],[21,"Вологда",313,1],[25,"Псков",209,1],[24,"Великий Новгород",226,1],[19,"Сыктывкар",245,1],[20256,"Череповец",315,1],[20246,"Северодвинск",183,1],[10869,"Всеволожск",82,1],[10860,"Гатчина",93,1],[10859,"Выборг",73,1],[21540,"Мурино",79,1],[10868,"Сертолово",65,1],[10861,"Сосновый Бор",68,1],[21541,"Кудрово",62,1],[10862,"Тихвин",56,1],[10863,"Кириши",49,1],[10864,"Кингисепп",47,1],[10866,"Тосно",40,1],[10867,"Луга",36,1],[20247,"Котлас",60,1],
-[35,"Краснодар",1200,2],[39,"Ростов-на-Дону",1143,2],[38,"Волгоград",1000,2],[37,"Астрахань",529,2],[959,"Сочи",466,2],[960,"Новороссийск",340,2],[146,"Симферополь",340,2],[20369,"Волжский",326,2],[20350,"Таганрог",248,2],[20351,"Шахты",231,2],[961,"Армавир",191,2],[20352,"Волгодонск",170,2],[20353,"Новочеркасск",169,2],[1093,"Майкоп",143,2],[20354,"Батайск",132,2],[971,"Геленджик",118,2],[1094,"Элиста",103,2],[970,"Анапа",101,2],[20357,"Азов",81,2],[20330,"Ейск",82,2],[20337,"Туапсе",61,2],
-[43,"Казань",1318,3],[47,"Нижний Новгород",1198,3],[51,"Самара",1163,3],[172,"Уфа",1145,3],[50,"Пермь",1055,3],[194,"Саратов",838,3],[20480,"Тольятти",693,3],[44,"Ижевск",654,3],[195,"Ульяновск",635,3],[48,"Оренбург",575,3],[20410,"Набережные Челны",542,3],[46,"Киров",536,3],[49,"Пенза",516,3],[45,"Чебоксары",497,3],[42,"Саранск",318,3],[20430,"Стерлитамак",280,3],[41,"Йошкар-Ола",278,3],[20411,"Нижнекамск",241,3],[20510,"Энгельс",231,3],[20450,"Дзержинск",229,3],[20530,"Орск",227,3],[20511,"Балаково",181,3],[20481,"Сызрань",168,3],[20412,"Альметьевск",159,3],[20431,"Салават",147,3],[20490,"Березники",141,3],[20432,"Нефтекамск",140,3],[20451,"Арзамас",103,3],[20413,"Зеленодольск",100,3],
-[54,"Екатеринбург",1544,4],[56,"Челябинск",1189,4],[55,"Тюмень",869,4],[20680,"Магнитогорск",413,4],[20730,"Сургут",398,4],[20630,"Нижний Тагил",344,4],[53,"Курган",310,4],[20731,"Нижневартовск",283,4],[20681,"Златоуст",167,4],[20631,"Каменск-Уральский",165,4],[20683,"Копейск",155,4],[20682,"Миасс",151,4],[20632,"Первоуральск",148,4],[20732,"Нефтеюганск",130,4],[20750,"Новый Уренгой",118,4],[57,"Ханты-Мансийск",109,4],[20751,"Ноябрьск",107,4],[20710,"Тобольск",103,4],[20633,"Серов",97,4],[20635,"Верхняя Пышма",92,4],
-[65,"Новосибирск",1635,5],[62,"Красноярск",1196,5],[66,"Омск",1126,5],[63,"Иркутск",651,5],[197,"Барнаул",631,5],[67,"Томск",573,5],[64,"Кемерово",558,5],[20830,"Новокузнецк",539,5],[20850,"Братск",225,5],[20851,"Ангарск",224,5],[20810,"Бийск",199,5],[1096,"Абакан",188,5],[20831,"Прокопьевск",185,5],[20780,"Норильск",181,5],[20811,"Рубцовск",140,5],[1095,"Кызыл",130,5],[20760,"Бердск",113,5],[20781,"Ачинск",103,5],[1091,"Горно-Алтайск",65,5],
-[76,"Хабаровск",617,6],[75,"Владивосток",605,6],[198,"Улан-Удэ",439,6],[74,"Якутск",370,6],[1097,"Чита",350,6],[77,"Благовещенск",244,6],[20910,"Комсомольск-на-Амуре",241,6],[78,"Южно-Сахалинск",200,6],[79,"Петропавловск-Камчатский",179,6],[20890,"Уссурийск",172,6],[20891,"Находка",144,6],[20892,"Артём",119,6],[80,"Магадан",92,6],[1098,"Биробиджан",74,6],
-[1100,"Махачкала",612,7],[36,"Ставрополь",457,7],[1106,"Грозный",332,7],[1102,"Владикавказ",301,7],[1101,"Нальчик",240,7],[20980,"Пятигорск",149,7],[21001,"Хасавюрт",146,7],[20981,"Кисловодск",128,7],[21000,"Дербент",126,7],[21002,"Каспийск",124,7],[1103,"Черкесск",123,7],[20982,"Невинномысск",118,7],[21050,"Назрань",116,7],[20983,"Ессентуки",115,7],[20985,"Минеральные Воды",76,7],[20986,"Георгиевск",67,7],[20987,"Будённовск",63,7],[1104,"Магас",15,7],
-];
-const D=["Центральный ФО","Северо-Западный ФО","Южный ФО","Приволжский ФО","Уральский ФО","Сибирский ФО","Дальневосточный ФО","Северо-Кавказский ФО"];
-const MO_IDS=C.filter(c=>c[3]===0&&c[0]!==213&&c[2]<1000).map(c=>c[0]);
-const LO_IDS=C.filter(c=>c[3]===1&&c[0]!==2&&c[2]<400).map(c=>c[0]);
-
 let sel=new Map(), fullData={}, running=false;
-// fullData[phrase] = { regionId: count, ... } — ALL regions from API
+let regionTree=null; // full tree from API
+let regionNames={}; // id -> name
 
+// Init
 document.addEventListener('DOMContentLoaded',()=>{
-  buildUI();document.getElementById('kw').addEventListener('input',updKw);
+  document.getElementById('kw').addEventListener('input',updKw);
   ['proxy','token'].forEach(k=>{const v=localStorage.getItem('ws_'+k);if(v)document.getElementById(k).value=v});
   if(localStorage.getItem('ws_theme')==='light')document.documentElement.classList.add('light');
   updTI();
+  // Try to restore cached tree
+  const cached=localStorage.getItem('ws_tree');
+  if(cached){try{regionTree=JSON.parse(cached);buildTreeUI();toast('Регионы загружены из кэша','ok',2000)}catch(e){}}
 });
 
 // Theme
 function togTheme(){document.documentElement.classList.toggle('light');localStorage.setItem('ws_theme',document.documentElement.classList.contains('light')?'light':'dark');updTI()}
 function updTI(){document.querySelector('.tt').textContent=document.documentElement.classList.contains('light')?'☀️':'🌙'}
 
-// Toast notifications
-let toastTimer=null;
-function toast(msg,type='ok',dur=4000){
-  const t=document.getElementById('toast');t.textContent=msg;t.className='toast v '+type;
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('v'),dur);
+// Toast
+let tt=null;
+function toast(m,t='ok',d=4000){const e=document.getElementById('toast');e.textContent=m;e.className='toast v '+t;clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('v'),d)}
+
+// API
+function gP(){return document.getElementById('proxy').value.trim()}
+function gT(){return document.getElementById('token').value.trim()}
+async function wsAPI(ep,pl={}){
+  const proxy=gP(),token=gT();
+  if(!proxy)throw new Error('Введите URL прокси');if(!token)throw new Error('Введите токен');
+  const r=await fetch(proxy,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token,endpoint:ep,payload:pl})});
+  if(!r.ok)throw new Error('Proxy HTTP '+r.status);
+  const j=await r.json();if(j.error)throw new Error(j.error);
+  if(j.status&&j.status>=400){throw new Error(`API ${j.status}: ${typeof j.data==='object'?JSON.stringify(j.data):j.data}`)}
+  return j.data;
 }
+async function testProxy(){try{const r=await fetch(gP());const j=await r.json();toast(j.ok?'✓ Прокси работает!':'Ответ: '+JSON.stringify(j),j.ok?'ok':'warn')}catch(e){toast('Прокси недоступен','err')}}
+async function checkQuota(){try{const j=await wsAPI('/userInfo');const i=j.userInfo||j;const r=i.dailyLimitRemaining??'?',t=i.dailyLimit??'?';document.getElementById('qRem').style.display='inline';document.getElementById('qRemV').textContent=`${r}/${t}`;toast(`Квота: ${r}/${t}`,'ok')}catch(e){toast('Ошибка: '+e.message,'err')}}
 
 // ============================================================
-// REGIONS UI
+// LOAD & BUILD REGION TREE
 // ============================================================
-function buildUI(){
+async function loadTree(){
+  const btn=document.getElementById('loadBtn');btn.classList.add('loading');btn.textContent='⏳ Загрузка...';
+  try{
+    const j=await wsAPI('/getRegionsTree',{});
+    let root=j.result||j.regions||j.items||j.data||j;
+    if(!Array.isArray(root))root=root.children||[root];
+    // Find Russia
+    let ru=null;
+    function findRu(nodes){if(!nodes||ru)return;for(const n of nodes){const id=gId(n),nm=gNm(n);if(String(id)==='225'||nm.toLowerCase().includes('россия')){ru=n;return}const ch=gCh(n);if(ch.length)findRu(ch)}}
+    findRu(root);
+    if(!ru)throw new Error('Не найден узел России');
+    // Build simplified tree
+    regionTree=simplify(ru);
+    regionNames={};flatNames(regionTree);
+    localStorage.setItem('ws_tree',JSON.stringify(regionTree));
+    buildTreeUI();
+    toast(`Загружено ${Object.keys(regionNames).length} регионов`,'ok');
+    log(`Дерево: ${Object.keys(regionNames).length} регионов`,'s');
+  }catch(e){toast('Ошибка: '+e.message,'err');log('Ошибка загрузки дерева: '+e.message,'e')}
+  btn.classList.remove('loading');btn.textContent='📥 Загрузить регионы из API';
+}
+
+function gId(n){return n.id??n.regionId??n.code??n.geoId??null}
+function gNm(n){return String(n.name??n.title??n.caption??n.text??'')}
+function gCh(n){const c=n.children??n.items??n.regions;return Array.isArray(c)?c:[]}
+function simplify(n){return{id:gId(n),name:gNm(n),children:gCh(n).map(simplify)}}
+function flatNames(n){if(n.id!=null&&n.name)regionNames[n.id]=n.name;if(n.children)n.children.forEach(flatNames)}
+
+// ============================================================
+// BUILD TREE UI
+// ============================================================
+function buildTreeUI(){
   const w=document.getElementById('rscroll');w.innerHTML='';
-  D.forEach((dn,di)=>{
-    const cities=C.filter(c=>c[3]===di).sort((a,b)=>b[2]-a[2]);
-    const d=document.createElement('div');d.className='dist';d.dataset.di=di;
-    d.innerHTML=`<div class="dh" onclick="togD(${di})"><div><span class="a" id="da${di}">▶</span>${dn}<span class="dc">(${cities.length})</span></div><button class="ds" onclick="event.stopPropagation();selD(${di})">всё</button></div><div class="db" id="db${di}"></div>`;
-    w.appendChild(d);
-    const body=d.querySelector('.db');
-    cities.forEach(c=>{
-      const ch=document.createElement('div');ch.className='cc';ch.textContent=c[1]+(c[2]>=1000?` ${(c[2]/1000).toFixed(1)}м`:c[2]>=100?` ${c[2]}к`:'');
-      ch.id='c'+c[0];ch.onclick=()=>togC(c[0],c[1]);body.appendChild(ch);
-    });
+  if(!regionTree||!regionTree.children)return;
+  regionTree.children.forEach(child=>w.appendChild(makeNode(child,0)));
+}
+
+function makeNode(node,level){
+  const div=document.createElement('div');div.className='rnode';div.dataset.id=node.id;div.dataset.name=node.name;
+  const hasChildren=node.children&&node.children.length>0;
+  const hdr=document.createElement('div');
+  hdr.className='rnh l'+Math.min(level,3)+(sel.has(node.id)?' selected':'');
+  hdr.dataset.id=node.id;
+
+  let left='';
+  if(hasChildren)left=`<span class="a" data-arrow="${node.id}">▶</span>`;
+  left+=`<span>${node.name}</span>`;
+
+  hdr.innerHTML=`<div>${left}</div><button class="sel-btn" onclick="event.stopPropagation();togSel(${node.id},'${esc(node.name)}')">${sel.has(node.id)?'✓':'+'}</button>`;
+
+  if(hasChildren){
+    hdr.onclick=(e)=>{if(e.target.classList.contains('sel-btn'))return;
+      const body=div.querySelector(':scope > .rnb');
+      body.classList.toggle('o');
+      const arrow=div.querySelector(`[data-arrow="${node.id}"]`);
+      if(arrow)arrow.classList.toggle('o');
+    };
+  }else{
+    hdr.onclick=()=>togSel(node.id,node.name);
+  }
+
+  div.appendChild(hdr);
+
+  if(hasChildren){
+    const body=document.createElement('div');body.className='rnb';
+    node.children.forEach(ch=>body.appendChild(makeNode(ch,level+1)));
+    div.appendChild(body);
+  }
+  return div;
+}
+
+function esc(s){return s.replace(/'/g,"\\'")}
+
+function togSel(id,name){
+  if(sel.has(id))sel.delete(id);else sel.set(id,name);
+  // Update UI
+  document.querySelectorAll(`.rnh[data-id="${id}"]`).forEach(el=>{
+    el.classList.toggle('selected',sel.has(id));
+    const btn=el.querySelector('.sel-btn');if(btn)btn.textContent=sel.has(id)?'✓':'+';
   });
+  updSbar();updQ();
 }
-function togD(i){document.getElementById('db'+i).classList.toggle('o');document.getElementById('da'+i).classList.toggle('o')}
-function selD(i){C.filter(c=>c[3]===i).forEach(c=>sel.set(c[0],c[1]));rfr();usb()}
-function togC(id,name){if(sel.has(id))sel.delete(id);else sel.set(id,name);const e=document.getElementById('c'+id);if(e)e.classList.toggle('s',sel.has(id));usb();updQ()}
-function rfr(){document.querySelectorAll('.cc').forEach(e=>{const id=parseInt(e.id.slice(1));e.classList.toggle('s',sel.has(id))})}
-function clearR(){sel.clear();rfr();usb();updQ()}
-function preset(p){
-  const s=[...C].sort((a,b)=>b[2]-a[2]);let l=[];
-  if(p==='top5')l=s.slice(0,5);else if(p==='top10')l=s.slice(0,10);else if(p==='top20')l=s.slice(0,20);
-  else if(p==='500k')l=s.filter(c=>c[2]>=500);else if(p==='250k')l=s.filter(c=>c[2]>=250);else if(p==='100k')l=s.filter(c=>c[2]>=100);
-  else if(p==='mo')l=C.filter(c=>MO_IDS.includes(c[0]));
-  else if(p==='lo')l=C.filter(c=>LO_IDS.includes(c[0]));
-  else if(p==='russia'){sel.set(225,'Вся Россия');rfr();usb();updQ();return}
-  l.forEach(c=>sel.set(c[0],c[1]));rfr();usb();updQ();
-}
-function usb(){
+
+function clearR(){sel.clear();document.querySelectorAll('.rnh.selected').forEach(el=>{el.classList.remove('selected');const b=el.querySelector('.sel-btn');if(b)b.textContent='+'});updSbar();updQ()}
+
+function updSbar(){
   const bar=document.getElementById('sbar'),list=document.getElementById('sl');
   document.getElementById('regC').textContent=sel.size;document.getElementById('sn').textContent=sel.size;
   if(!sel.size){bar.classList.remove('v');return}
   bar.classList.add('v');list.innerHTML='';
-  sel.forEach((n,id)=>{const t=document.createElement('div');t.className='st';t.innerHTML=`${n} <span class="x" onclick="togC(${id},'${n.replace(/'/g,"\\'")}')">&times;</span>`;list.appendChild(t)});
+  sel.forEach((n,id)=>{const t=document.createElement('div');t.className='st';t.innerHTML=`${n} <span class="x" onclick="togSel(${id},'${esc(n)}')">&times;</span>`;list.appendChild(t)});
 }
+
 function filterR(){
   const q=document.getElementById('rsearch').value.toLowerCase();
-  document.querySelectorAll('.dist').forEach(d=>{
-    const di=parseInt(d.dataset.di);let m=false;
-    d.querySelectorAll('.cc').forEach(ch=>{const id=parseInt(ch.id.slice(1));const c=C.find(x=>x[0]===id);
-      const v=c&&c[1].toLowerCase().includes(q);ch.style.display=v||!q?'':'none';if(v)m=true});
-    d.style.display=m||!q?'':'none';
-    if(q&&m){document.getElementById('db'+di).classList.add('o');document.getElementById('da'+di)?.classList.add('o')}
+  document.querySelectorAll('.rnode').forEach(node=>{
+    const name=node.dataset.name?.toLowerCase()||'';
+    if(!q){node.style.display='';return}
+    const match=name.includes(q);
+    // Show node and expand parents if match
+    if(match){
+      node.style.display='';
+      let p=node.parentElement;
+      while(p){if(p.classList.contains('rnb')){p.classList.add('o');const arr=p.previousElementSibling?.querySelector('.a');if(arr)arr.classList.add('o')}p=p.parentElement}
+    }else{
+      // Hide only leaf nodes that don't match; keep parents visible if any child matches
+      const hasMatchingChild=node.querySelector('.rnode[style=""],.rnode:not([style])');
+      node.style.display=hasMatchingChild?'':'none';
+    }
   });
 }
 
 // ============================================================
-// KEYWORDS & QUOTA
+// KW & QUOTA
 // ============================================================
 function getKw(){return document.getElementById('kw').value.split('\n').map(k=>k.trim()).filter(k=>k)}
 function updKw(){document.getElementById('kwC').textContent=getKw().length;updQ()}
-function updQ(){
-  const n=getKw().length,t=n*2;
-  document.getElementById('qKw').textContent=n;
-  const e=document.getElementById('qTot');e.textContent=t;
-  e.className='qv'+(t>500?' d':t>100?' w':'');
-}
+function updQ(){const n=getKw().length,t=n*2;document.getElementById('qKw').textContent=n;const e=document.getElementById('qTot');e.textContent=t;e.className='qv'+(t>500?' d':t>100?' w':'')}
 
 // ============================================================
-// API
-// ============================================================
-function gP(){return document.getElementById('proxy').value.trim()}
-function gT(){return document.getElementById('token').value.trim()}
-
-async function wsAPI(endpoint,payload={}){
-  const proxy=gP(),token=gT();
-  if(!proxy)throw new Error('Введите URL прокси');
-  if(!token)throw new Error('Введите токен');
-  const r=await fetch(proxy,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token,endpoint,payload})});
-  if(!r.ok)throw new Error('Proxy HTTP '+r.status);
-  const j=await r.json();
-  if(j.error)throw new Error(j.error);
-  if(j.status&&j.status>=400){
-    const msg=typeof j.data==='object'?JSON.stringify(j.data):String(j.data);
-    throw new Error(`API ${j.status}: ${msg}`);
-  }
-  return j.data;
-}
-
-async function testProxy(){
-  try{const proxy=gP();if(!proxy){toast('Введите URL прокси','err');return}
-    const r=await fetch(proxy);const j=await r.json();
-    if(j.ok)toast('✓ Прокси работает!','ok');else toast('Прокси ответил: '+JSON.stringify(j),'warn');
-  }catch(e){toast('Прокси недоступен: '+e.message,'err')}
-}
-
-async function checkQuota(){
-  try{
-    const j=await wsAPI('/userInfo');const info=j.userInfo||j;
-    const rem=info.dailyLimitRemaining??'?',tot=info.dailyLimit??'?';
-    document.getElementById('qRem').style.display='inline';
-    document.getElementById('qRemV').textContent=`${rem} / ${tot}`;
-    toast(`Квота: ${rem} / ${tot} запросов`,'ok');
-  }catch(e){toast('Ошибка квоты: '+e.message,'err')}
-}
-
-// ============================================================
-// MAIN RUN with auto-retry
+// MAIN RUN
 // ============================================================
 async function run(){
   if(running)return;
-  const proxy=gP();if(!proxy){toast('Введите URL прокси','err');return}
-  const token=gT();if(!token){toast('Введите токен','err');return}
+  if(!gP()){toast('Введите URL прокси','err');return}
+  if(!gT()){toast('Введите токен','err');return}
   const kw=getKw();if(!kw.length){toast('Введите ключи','err');return}
   if(!sel.size){toast('Выберите регионы','err');return}
 
-  localStorage.setItem('ws_proxy',proxy);localStorage.setItem('ws_token',token);
+  localStorage.setItem('ws_proxy',gP());localStorage.setItem('ws_token',gT());
   running=true;document.getElementById('startBtn').disabled=true;
   fullData={};
 
+  // Ensure regionNames loaded
+  if(!Object.keys(regionNames).length&&regionTree){flatNames(regionTree)}
+
   const pw=document.getElementById('pw');pw.classList.add('v');
   log(`Старт: ${kw.length} ключей → /regions (${kw.length*2} ед. квоты)`,'i');
-  toast(`Парсинг запущен: ${kw.length} ключей...`,'ok',6000);
+  toast(`Парсинг: ${kw.length} ключей...`,'ok',6000);
 
   let ok=0,fail=0;
-  const MAX_RETRIES=3;
-
   for(let i=0;i<kw.length;i++){
-    const phrase=kw[i];
-    const pct=((i+1)/kw.length*100).toFixed(0);
+    const phrase=kw[i],pct=((i+1)/kw.length*100).toFixed(0);
     document.getElementById('pf').style.width=pct+'%';
     document.getElementById('pt').textContent=`${i+1}/${kw.length}: ${phrase}`;
     document.getElementById('pp').textContent=pct+'%';
 
     let success=false;
-    for(let attempt=1;attempt<=MAX_RETRIES;attempt++){
+    for(let att=1;att<=3;att++){
       try{
         const j=await wsAPI('/regions',{phrase});
-        const regions=j.regions||j.result||j.items||[];
-        const m={};regions.forEach(r=>{const rid=r.regionId??r.id;const cnt=Number(r.count??r.shows??0);if(rid!==undefined)m[rid]=cnt});
-        fullData[phrase]=m;
-        ok++;log(`✓ [${i+1}] "${phrase}" — ${regions.length} рег.`,'s');
-        success=true;break;
+        const regs=j.regions||j.result||j.items||[];
+        const m={};regs.forEach(r=>{const rid=r.regionId??r.id;const cnt=Number(r.count??r.shows??0);if(rid!==undefined)m[rid]=cnt;if(rid!==undefined&&r.regionId&&!regionNames[rid]){const nm=r.name||r.regionName;if(nm)regionNames[rid]=nm}});
+        fullData[phrase]=m;ok++;log(`✓ [${i+1}] "${phrase}" — ${regs.length} рег.`,'s');success=true;break;
       }catch(e){
-        const isLimit=e.message.includes('429')||e.message.toLowerCase().includes('квот')||e.message.toLowerCase().includes('quota');
-        if(isLimit&&attempt<MAX_RETRIES){
-          const wait=15*attempt;
-          log(`⏳ [${i+1}] "${phrase}" лимит, ретрай ${attempt}/${MAX_RETRIES} через ${wait}с...`,'i');
-          toast(`Лимит API, ждём ${wait}с и повторяем...`,'warn',wait*1000);
-          await sleep(wait*1000);
-        }else if(attempt===MAX_RETRIES){
-          fail++;log(`✗ [${i+1}] "${phrase}": ${e.message} (после ${MAX_RETRIES} попыток)`,'e');
-          fullData[phrase]={};
-        }else{
-          fail++;log(`✗ [${i+1}] "${phrase}": ${e.message}`,'e');
-          fullData[phrase]={};break;
-        }
+        const isLimit=e.message.includes('429')||e.message.toLowerCase().includes('квот');
+        if(isLimit&&att<3){const w=15*att;log(`⏳ "${phrase}" лимит, ретрай через ${w}с`,'i');toast(`Лимит, ждём ${w}с...`,'warn',w*1000);await sleep(w*1000)}
+        else{fail++;log(`✗ [${i+1}] "${phrase}": ${e.message}`,'e');fullData[phrase]={};break}
       }
     }
     await sleep(300);
   }
-
   document.getElementById('pf').style.width='100%';
-  document.getElementById('pt').textContent=`Готово: ${ok} успешно, ${fail} ошибок`;
+  document.getElementById('pt').textContent=`Готово: ${ok} ✓, ${fail} ✗`;
   document.getElementById('pp').textContent='100%';
-  log(`Завершено: ${ok}/${kw.length} успешно`,'s');
-  toast(`Парсинг завершён: ${ok}/${kw.length} ключей`,'ok',8000);
+  toast(`Завершено: ${ok}/${kw.length}`,'ok',8000);
+  log(`Завершено: ${ok}/${kw.length}`,'s');
   renderRes(kw);
   running=false;document.getElementById('startBtn').disabled=false;
 }
 
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
-
-// ============================================================
-// LOG
-// ============================================================
 function log(m,t='i'){const p=document.getElementById('lp'),b=document.getElementById('lb');p.classList.add('v');b.innerHTML+=`<div class="le ${t}">[${new Date().toLocaleTimeString('ru')}] ${m}</div>`;b.scrollTop=b.scrollHeight}
 
 // ============================================================
-// RESULTS — selected + full
+// RESULTS
 // ============================================================
 function renderRes(kw){
   document.getElementById('rp').classList.add('v');
-  // Selected table
-  const selIds=Array.from(sel.entries());
-  if(!selIds.length||!kw.length)return;
-  let h='<tr><th>Ключевой запрос</th>';selIds.forEach(([id,name])=>h+=`<th>${name}</th>`);
+  const ids=Array.from(sel.entries());if(!ids.length||!kw.length)return;
+  let h='<tr><th>Ключевой запрос</th>';ids.forEach(([id,name])=>h+=`<th>${name}</th>`);
   document.getElementById('tH').innerHTML=h+'</tr>';
   let b='';kw.forEach(k=>{b+='<tr><td>'+k.replace(/</g,'&lt;')+'</td>';
-    selIds.forEach(([id])=>{const v=fullData[k]?.[id]??0;let c='n';
+    ids.forEach(([id])=>{const v=fullData[k]?.[id]??0;let c='n';
       if(typeof v==='number'){if(v>=5000)c+=' h';else if(v>=1000)c+=' m';else if(v<100)c+=' l';b+=`<td class="${c}">${v.toLocaleString('ru')}</td>`}
       else b+=`<td class="n l">—</td>`});b+='</tr>'});
   document.getElementById('tB').innerHTML=b;
@@ -478,23 +445,17 @@ function renderRes(kw){
 
 function showFull(){
   const kw=getKw();if(!kw.length||!Object.keys(fullData).length)return;
-  document.getElementById('rpFull').classList.add('v');
-  // Collect ALL unique region IDs
-  const allRids=new Set();
-  Object.values(fullData).forEach(m=>Object.keys(m).forEach(k=>allRids.add(Number(k))));
+  document.getElementById('rpF').classList.add('v');
+  const allRids=new Set();Object.values(fullData).forEach(m=>Object.keys(m).forEach(k=>allRids.add(Number(k))));
   const rids=[...allRids].sort((a,b)=>a-b);
-  // Build name map from cities DB
-  const nameMap={};C.forEach(c=>nameMap[c[0]]=c[1]);
-  let h='<tr><th>Ключевой запрос</th>';rids.forEach(id=>h+=`<th>${nameMap[id]||id}</th>`);
+  let h='<tr><th>Ключевой запрос</th>';rids.forEach(id=>h+=`<th>${regionNames[id]||id}</th>`);
   document.getElementById('tHF').innerHTML=h+'</tr>';
   let b='';kw.forEach(k=>{b+='<tr><td>'+k.replace(/</g,'&lt;')+'</td>';
-    rids.forEach(id=>{const v=fullData[k]?.[id]??0;let c='n';
-      if(v>=5000)c+=' h';else if(v>=1000)c+=' m';else if(v<100)c+=' l';
-      b+=`<td class="${c}">${v.toLocaleString('ru')}</td>`});b+='</tr>'});
+    rids.forEach(id=>{const v=fullData[k]?.[id]??0;let c='n';if(v>=5000)c+=' h';else if(v>=1000)c+=' m';else if(v<100)c+=' l';
+      b+=`<td class="${c}">${typeof v==='number'?v.toLocaleString('ru'):'—'}</td>`});b+='</tr>'});
   document.getElementById('tBF').innerHTML=b;
   toast('Полная таблица загружена','ok');
 }
-function hideFull(){document.getElementById('rpFull').classList.remove('v')}
 
 // ============================================================
 // EXPORT
@@ -504,17 +465,16 @@ function getTD(mode){
   if(mode==='full'){
     const allRids=new Set();Object.values(fullData).forEach(m=>Object.keys(m).forEach(k=>allRids.add(Number(k))));
     const rids=[...allRids].sort((a,b)=>a-b);
-    const nameMap={};C.forEach(c=>nameMap[c[0]]=c[1]);
-    return{h:['Ключевой запрос',...rids.map(id=>nameMap[id]||String(id))],r:kw.map(k=>[k,...rids.map(id=>fullData[k]?.[id]??'')])};
+    return{h:['Ключевой запрос',...rids.map(id=>regionNames[id]||String(id))],r:kw.map(k=>[k,...rids.map(id=>fullData[k]?.[id]??'')])};
   }
-  const selIds=Array.from(sel.entries());
-  return{h:['Ключевой запрос',...selIds.map(([_,n])=>n)],r:kw.map(k=>[k,...selIds.map(([id])=>fullData[k]?.[id]??'')])};
+  const ids=Array.from(sel.entries());
+  return{h:['Ключевой запрос',...ids.map(([_,n])=>n)],r:kw.map(k=>[k,...ids.map(([id])=>fullData[k]?.[id]??'')])};
 }
 function dlCSV(m){const{h,r}=getTD(m);let c='\uFEFF'+h.join(';')+'\n';r.forEach(x=>c+=x.join(';')+'\n');dl(c,'wordstat'+(m==='full'?'_full':'')+'.csv','text/csv;charset=utf-8')}
 function dlTSV(m){const{h,r}=getTD(m);let c=h.join('\t')+'\n';r.forEach(x=>c+=x.join('\t')+'\n');dl(c,'wordstat'+(m==='full'?'_full':'')+'.tsv','text/tab-separated-values')}
 function dl(c,n,t){const b=new Blob([c],{type:t}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=n;document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(u)}
-function copyT(m){const{h,r}=getTD(m);let t=h.join('\t')+'\n';r.forEach(x=>t+=x.join('\t')+'\n');navigator.clipboard.writeText(t).then(()=>toast('Скопировано в буфер!','ok'))}
-function clearAll(){document.getElementById('kw').value='';clearR();fullData={};document.getElementById('rp').classList.remove('v');document.getElementById('rpFull').classList.remove('v');document.getElementById('lp').classList.remove('v');document.getElementById('lb').innerHTML='';document.getElementById('pw').classList.remove('v');document.getElementById('qRem').style.display='none';updKw()}
+function copyT(m){const{h,r}=getTD(m);let t=h.join('\t')+'\n';r.forEach(x=>t+=x.join('\t')+'\n');navigator.clipboard.writeText(t).then(()=>toast('Скопировано!','ok'))}
+function clearAll(){document.getElementById('kw').value='';clearR();fullData={};['rp','rpF','lp','pw'].forEach(id=>document.getElementById(id).classList.remove('v'));document.getElementById('lb').innerHTML='';document.getElementById('qRem').style.display='none';updKw()}
 </script>
 </body>
 </html>
