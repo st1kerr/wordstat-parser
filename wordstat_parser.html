@@ -498,7 +498,7 @@ async function loadTree(){
       else ru={id:225,name:'Россия',children:root};
     }
     regionTree=simplify(ru);
-    regionNames={};regionNames[225]='Россия';
+    // Merge tree names into existing (keep static city names)
     flatNames(regionTree);
     localStorage.setItem('ws_tree',JSON.stringify(regionTree));
     switchToTree();
@@ -583,26 +583,52 @@ async function wsAPI(endpoint, payload={}) {
   const proxy=getProxy(), token=getToken();
   if(!proxy)throw new Error('Введите URL прокси');
   if(!token)throw new Error('Введите токен');
-  const r=await fetch(proxy,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({token,endpoint,payload})
-  });
-  if(!r.ok)throw new Error('Proxy HTTP '+r.status);
-  const j=await r.json();
+  let r;
+  try{
+    r=await fetch(proxy,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token,endpoint,payload})
+    });
+  }catch(e){
+    throw new Error(`Fetch failed (${e.message}). Проверьте URL прокси и интернет-соединение.`);
+  }
+  if(!r.ok){
+    let body='';try{body=await r.text()}catch(_){}
+    throw new Error(`Proxy HTTP ${r.status}: ${body.slice(0,200)}`);
+  }
+  let j;
+  try{j=await r.json()}catch(e){
+    const txt=await r.clone().text().catch(()=>'');
+    throw new Error(`Ответ не JSON: ${txt.slice(0,200)}`);
+  }
   if(j.error)throw new Error(j.error);
-  if(j.status&&j.status>=400)throw new Error(`API ${j.status}: ${JSON.stringify(j.data)}`);
+  if(j.status&&j.status>=400)throw new Error(`API ${j.status}: ${JSON.stringify(j.data).slice(0,300)}`);
   return j.data;
 }
 
 async function testProxy(){
+  const proxy=getProxy();
+  if(!proxy){toast('Введите URL прокси','err');return}
+  log('Тест прокси: '+proxy.substring(0,70)+'...','i');
   try{
-    const proxy=getProxy();if(!proxy){toast('Введите URL прокси','err');return}
-    const r=await fetch(proxy);const j=await r.json();
-    if(j.ok)toast('✓ Прокси работает!','ok');
-    else toast('Ответ: '+JSON.stringify(j),'warn');
-    log('Прокси: '+(j.ok?'OK':JSON.stringify(j)),j.ok?'s':'i');
+    const r=await fetch(proxy);
+    log('GET статус: '+r.status+' / URL: '+r.url.substring(0,60),'i');
+    const j=await r.json();
+    if(j.ok){toast('✓ Прокси работает!','ok');log('✓ Прокси OK','s')}
+    else{toast('Прокси ответил: '+JSON.stringify(j).substring(0,100),'warn');log('Ответ: '+JSON.stringify(j),'i')}
   }catch(e){toast('Прокси недоступен: '+e.message,'err');log('Ошибка прокси: '+e.message,'e')}
+  // Also test POST
+  const token=getToken();
+  if(token){
+    try{
+      log('Тест POST → /userInfo...','i');
+      const j=await wsAPI('/userInfo');
+      const info=j.userInfo||j;
+      log('✓ POST работает! Квота: '+(info.dailyLimitRemaining??'?')+'/'+(info.dailyLimit??'?'),'s');
+      toast('✓ Прокси + API работают!','ok');
+    }catch(e){log('POST ошибка: '+e.message,'e');toast('GET OK, но POST не работает: '+e.message,'err',8000)}
+  }
 }
 
 async function checkQuota(){
@@ -652,7 +678,7 @@ async function run(){
         regions.forEach(r=>{
           const rid=r.regionId??r.id;
           const cnt=Number(r.count??r.shows??0);
-          if(rid!==undefined){m[rid]=cnt;if(!regionNames[rid]){const nm=r.name||r.regionName;if(nm)regionNames[rid]=nm}}
+          if(rid!==undefined){m[rid]=cnt;if(!regionNames[rid]){const nm=r.name||r.regionName||r.title||r.caption;if(nm)regionNames[rid]=nm}}
         });
         fullData[phrase]=m;ok++;
         log(`✓ [${i+1}] "${phrase}" — ${regions.length} рег.`,'s');
@@ -704,18 +730,39 @@ function renderRes(kw){
   document.getElementById('tB').innerHTML=b;
 }
 
-function showFull(){
+async function showFull(){
   const kw=getKw();if(!kw.length||!Object.keys(fullData).length)return;
-  document.getElementById('rpF').classList.add('v');
+  // Collect all region IDs from data
   const allRids=new Set();Object.values(fullData).forEach(m=>Object.keys(m).forEach(k=>allRids.add(Number(k))));
   const rids=[...allRids].sort((a,b)=>a-b);
-  let h='<tr><th>Ключевой запрос</th>';rids.forEach(id=>h+=`<th>${regionNames[id]||id}</th>`);
+  // Check for unknown names
+  const unknowns=rids.filter(id=>!regionNames[id]);
+  if(unknowns.length>0&&!regionTree){
+    toast('Загружаю имена регионов...','warn',5000);
+    log(`${unknowns.length} регионов без имён, загружаю дерево...`,'i');
+    try{
+      const j=await wsAPI('/getRegionsTree',{});
+      let root=j;
+      if(j.result)root=j.result;else if(j.regions)root=j.regions;else if(j.items)root=j.items;else if(j.data)root=j.data;
+      if(!Array.isArray(root))root=root.children?[root]:[root];
+      let ru=null;
+      function findRu(nodes){if(!nodes||!Array.isArray(nodes)||ru)return;for(const n of nodes){const id=n.id??n.regionId??n.code??n.geoId;const nm=String(n.name??n.title??n.caption??n.text??'');if(String(id)==='225'||nm.toLowerCase().includes('россия')){ru=n;return}const ch=n.children??n.items??n.regions;if(Array.isArray(ch))findRu(ch)}}
+      findRu(root);
+      if(!ru)ru=root.length===1?root[0]:{id:225,name:'Россия',children:root};
+      regionTree=simplify(ru);flatNames(regionTree);
+      localStorage.setItem('ws_tree',JSON.stringify(regionTree));
+      log(`Дерево загружено: ${Object.keys(regionNames).length} имён`,'s');
+    }catch(e){log('Не удалось загрузить имена: '+e.message,'e')}
+  }
+  document.getElementById('rpF').classList.add('v');
+  let h='<tr><th>Ключевой запрос</th>';rids.forEach(id=>h+=`<th>${regionNames[id]||('ID:'+id)}</th>`);
   document.getElementById('tHF').innerHTML=h+'</tr>';
   let b='';kw.forEach(k=>{b+='<tr><td>'+k.replace(/</g,'&lt;')+'</td>';
     rids.forEach(id=>{const v=fullData[k]?.[id]??0;let c='n';if(v>=5000)c+=' h';else if(v>=1000)c+=' m';else if(v<100)c+=' l';
       b+=`<td class="${c}">${typeof v==='number'?v.toLocaleString('ru'):'—'}</td>`});b+='</tr>'});
   document.getElementById('tBF').innerHTML=b;
-  toast('Полная таблица загружена','ok');
+  const stillUnknown=rids.filter(id=>!regionNames[id]).length;
+  toast(stillUnknown?`Таблица загружена (${stillUnknown} рег. без имён)`:'Полная таблица загружена','ok');
 }
 
 // ============================================================
